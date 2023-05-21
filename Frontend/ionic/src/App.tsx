@@ -22,11 +22,12 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import Customers from "./pages/Custumers";
-import Products from "./pages/Products";
-import Orders from "./pages/Orders";
-import Suppliers from "./pages/Suppliers";
-import Login from "./pages/Login";
+import Customers from "./pages/custumer/Custumers";
+import Orders from "./pages/order/Order";
+import Suppliers from "./pages/supplier/Supplier";
+import Login from "./pages/login/Login";
+import ProductPage from "./pages/product/ProductPage";
+import ProductEdit from "./pages/product/ProductEdit";
 
 setupIonicReact();
 
@@ -49,20 +50,23 @@ const App: React.FC = () => {
             <Route path="/page/:name" exact component={Page} />
 
             {/* Products Routes */}
-            <Route path="/page/products" exact component={Products} />
-            <Route path="/page/products/:id" exact component={Page} />
+            <Route path="/page/products" exact component={ProductPage} />
+            <Route path="/page/products/:id" exact component={ProductEdit} />
 
             {/* Orders Routes */}
             <Route path="/page/orders" exact component={Orders} />
             <Route path="/page/orders/:id" exact component={Page} />
+            <Route path="/page/orders/new" exact component={Page} />
 
             {/* Customers Routes */}
             <Route path="/page/customers" exact component={Customers} />
             <Route path="/page/customers/:id" exact component={Page} />
+            <Route path="/page/customers/new" exact component={Page} />
 
             {/* Suppliers Routes */}
             <Route path="/page/suppliers" exact component={Suppliers} />
             <Route path="/page/suppliers/:id" exact component={Page} />
+            <Route path="/page/suppliers/new" exact component={Page} />
 
             <Route path={["/page/home", "/page/about", "/page/contact"]} exact component={Page} />
           </IonRouterOutlet>
