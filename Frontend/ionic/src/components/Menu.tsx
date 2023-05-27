@@ -54,7 +54,7 @@ const appPages: AppPage[] = [
     mdIcon: cubeSharp,
   },
   {
-    title: "Pedidos",
+    title: "Transacciones",
     url: "/page/orders",
     iosIcon: receiptOutline,
     mdIcon: receiptSharp,
@@ -66,8 +66,8 @@ const appPages: AppPage[] = [
     mdIcon: personSharp,
   },
   {
-    title: "Facturacion",
-    url: "/page/billings",
+    title: "Kardex",
+    url: "/page/kardex",
     iosIcon: documentAttachOutline,
     mdIcon: documentAttachSharp,
   },
