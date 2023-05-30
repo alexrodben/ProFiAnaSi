@@ -1,7 +1,0 @@
-sudo apt update
-sudo apt install default-mysql-server
-sudo systemctl status mysql
-sudo apt install apache2
-sudo systemctl status apache2
-sudo apt install php
-php -v
