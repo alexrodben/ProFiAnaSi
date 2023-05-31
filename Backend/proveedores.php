@@ -75,7 +75,7 @@ function handleUpdateProveedores($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     $Id_Proveedor = $data["Id_Proveedor"];
-    $query = "UPDATE tbl_proveedor SET `Estatus` = '$Estatus',`Nombre` = '$Nombre',`Direccion` = '$Direccion',`Nit` = '$Nit',`Telefono` = '$Telefono',`Email` = '$Email',`CreatedAt` = '$CreatedAt',`UpdatedAt` = '$UpdatedAt' WHERE tbl_proveedor.Id_Proveedor= '$Id_Proveedor'";
+    $query = "CALL sp_editar_proveedor('$Id_Proveedor','$Estatus','$Nombre','$Direccion','$Nit', '$Telefono','$Email', '$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -101,7 +101,7 @@ function handleDeleteProveedores($database)
   try {
     $data = json_decode(file_get_contents("php://input"), true);
     $Id_Proveedor = $data["Id_Proveedor"];
-    $query = "DELETE FROM tbl_proveedor WHERE tbl_proveedor.Id_Proveedor='$Id_Proveedor'";
+    $query ="CALL sp_actualizar_proveedor_inactivo('$Id_Proveedor')"; 
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -136,7 +136,7 @@ function handlePostProveedores($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     
-    $query = "INSERT INTO `tbl_proveedor` ( `Id_Proveedor`, `Estatus`, `Nombre`, `Direccion`, 'Nit','Telefono','Email','CreatedAt','UpdatedAt') VALUES (NULL, '$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
+    $query =  "CALL sp_insertar_proveedor('$Id_Proveedor','$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);

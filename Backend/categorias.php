@@ -70,7 +70,7 @@ function handleUpdateCategorias($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     $Id_Categoria = $data["Id_Categoria"];
-    $query = "UPDATE tbl_categoria SET ,`Nombre` = '$Nombre' ,`CreatedAt` = '$CreatedAt',`UpdatedAt` = '$UpdatedAt' WHERE tbl_proveedor.id_proveedor= '$Id_Categoria'";
+    $query = "CALL sp_editar_categoria('$Id_Categoria', '$Nombre', '$CreatedAt', '$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -125,8 +125,8 @@ function handlePostCategorias($database)
     $Nombre=$data["Nombre"];
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
-        $query = "INSERT INTO `tbl_categoria` ( `Id_Categoria`, `Nombre`, `CreatedAt`,`UpdatedAt`) VALUES (NULL,'$Nombre','$CreatedAt','$UpdatedAt')";
-    $result = $database->query($query);
+        $query = "CALL sp_insertar_categoria('$Id_Categoria', '$Nombre', '$CreatedAt', '$UpdatedAt')";
+        $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
       echo json_encode(["controller" => "categorias", "message" => mysqli_error($database)]);

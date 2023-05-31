@@ -128,7 +128,7 @@ function handlePostCompras($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     
-    $query = "INSERT INTO `tbl_compra` ( `Id_Compra`, `Id_Proveedor`, `Fecha`,'CreatedAt','UpdatedAt') VALUES (NULL, '$Id_Proveedor', '$Fecha','$CreatedAt','$UpdatedAt')";
+    $query =  "CALL sp_insertar_compra('$Id_Compra', '$Id_Proveedor', '$Fecha','$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);

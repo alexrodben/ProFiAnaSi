@@ -75,7 +75,7 @@ function handleUpdateClientes($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     $Id_Cliente = $data["Id_Cliente"];
-    $query = "UPDATE tbl_proveedor SET `Estatus` = '$Estatus',`Nombre` = '$Nombre',`Direccion` = '$Direccion',`Nit` = '$Nit',`Telefono` = '$Telefono',`Email` = '$Email',`CreatedAt` = '$CreatedAt',`UpdatedAt` = '$UpdatedAt' WHERE tbl_cliente.Id_Cliente= '$Id_Cliente'";
+    $query ="CALL sp_editar_cliente('$Id_Cliente','$Estatus','$Nombre','$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt' )";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -101,7 +101,7 @@ function handleDeleteClientes($database)
   try {
     $data = json_decode(file_get_contents("php://input"), true);
     $Id_Cliente = $data["Id_Cliente"];
-    $query = "DELETE FROM tbl_cliente WHERE tbl_cliente.Id_Cliente='$Id_Cliente'";
+    $query ="CALL sp_actualizar_cliente_inactivo('$Id_Cliente')"; 
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -136,7 +136,7 @@ function handlePostClientes($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     
-    $query = "INSERT INTO `tbl_cliente` ( `Id_Cliente`, `Estatus`, `Nombre`, `Direccion`, 'Nit','Telefono','Email','CreatedAt','UpdatedAt') VALUES (NULL, '$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
+    $query =  "CALL sp_insertar_cliente('$Id_Cliente','$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);

@@ -79,7 +79,7 @@ function handleUpdateProductos($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     $Id_Producto = $data["Id_Producto"];
-    $query = "UPDATE tbl_producto SET `Id_Categoria` = '$Id_Categoria',`Nombre` = '$Nombre',`SKU` = '$SKU',`Estado` = '$Estado',`Descripcion` = '$Descripcion',`Existencia_minima` = '$Existencia_minima',`Existencia_maxima` = '$Existencia_maxima',`Stock` = '$Stock',`Imagen` = '$Imagen',`Valor_Unitario` = '$Valor_Unitario',`CreatedAt` = '$CreatedAt',`UpdatedAt` = '$UpdatedAt' WHERE tbl_producto.Id_Producto= '$Id_Producto'";
+    $query = "CALL sp_editar_producto('$Id_Producto','$Id_Categoria','$Nombre','$SKU','$Estado','$Descripcion', '$Existencia_minima', '$Existencia_maxima','$Stock', '$Imagen','$Valor_Unitario', '$CreatedAt', '$UpdatedAt' )";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -105,7 +105,7 @@ function handleDeleteProductos($database)
   try {
     $data = json_decode(file_get_contents("php://input"), true);
     $Id_Producto = $data["Id_Producto"];
-    $query = "DELETE FROM tbl_producto WHERE tbl_producto.Id_Producto='$Id_Producto'";
+    $query ="CALL sp_actualizar_producto_inactivo('$Id_Producto')"; 
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
@@ -143,7 +143,7 @@ function handlePostProductos($database)
     $Valor_Unitario= $data["Valor_Unitario"];
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];    
-    $query = "INSERT INTO `tbl_producto` ( `Id_Producto`, `Id_Categoria`, `Nombre`, `SKU`, 'Estado','Descripcion','Existencia_minima','Existencia_maxima','Stock','Imagen','Valor_Unitario','CreatedAt','UpdatedAt') VALUES (NULL, '$Id_Categoria', '$Nombre', '$SKU','$Estado','$Descripcion','$Existencia_minima','$Existencia_maxima','$Stock','$Imagen','$Valor_Unitario','$CreatedAt','$UpdatedAt')";
+    $query =  "CALL sp_insertar_producto('$Id_Producto','$Id_Categoria', '$Nombre', '$SKU','$Estado','$Descripcion','$Existencia_minima','$Existencia_maxima','$Stock','$Imagen','$Valor_Unitario','$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
