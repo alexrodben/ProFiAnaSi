@@ -8,26 +8,26 @@ if ($database->connect_error) {
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
   case 'GET':
-    handleGetProveedores($database);
+    handleGetClientes($database);
     break;
   case 'POST':
-    handlePostProveedores($database);
+    handlePostClientes($database);
     break;
   case 'PUT':
-    handleUpdateProveedores($database);
+    handleUpdateClientes($database);
     break;
   case 'DELETE':
-    handleDeleteProveedores($database);
+    handleDeleteClientes($database);
     break;
   default:
     http_response_code(405);
-    echo json_encode(array("message" => "proveedores: Método no permitido"));
+    echo json_encode(array("message" => "clientes: Método no permitido"));
     break;
 }
 
-function handleGetProveedoresItem($database, $id)
+function handleGetClientesItem($database, $id)
 {
-  $query = "SELECT * FROM tbl_proveedor WHERE Id_Proveedor =$id";
+  $query = "SELECT * FROM tbl_cliente WHERE Id_Cliente =$id";
   $result = $database->query($query);
   $data = array();
   if ($result->num_rows > 0) {
@@ -39,22 +39,22 @@ function handleGetProveedoresItem($database, $id)
 }
 
 
-function handleGetProveedores($database)
+function handleGetClientes($database)
 {
   try {
-    $query = "SELECT * FROM tbl_proveedor WHERE Id_Proveedor =" . $_GET["Id_Proveedor"];
+    $query = "SELECT * FROM tbl_cliente";
     $result = $database->query($query);
     if ($result->num_rows > 0) {
       $data = array();
       while ($row = $result->fetch_assoc()) {
-        $row["proveedores"] = handleGetProveedoresItem($database, $row["Id_Proveedor"]);
+        $row["clientes"] = handleGetClientesItem($database, $row["Id_Cliente"]);
         $data[] = $row;
       }
       http_response_code(200);
       echo json_encode($data);
     } else {
       http_response_code(404);
-      echo json_encode(array("message" => "proveedores: No se encontraron datos"));
+      echo json_encode(array("message" => "clientes: No se encontraron datos"));
     }
   } catch (Exception $e) {
     http_response_code(403);
@@ -62,7 +62,7 @@ function handleGetProveedores($database)
   }
 }
 
-function handleUpdateProveedores($database)
+function handleUpdateClientes($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
@@ -74,12 +74,12 @@ function handleUpdateProveedores($database)
     $Email = $data["Email"];
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
-    $Id_Proveedor = $data["Id_Proveedor"];
-    $query = "CALL sp_editar_proveedor('$Id_Proveedor','$Estatus','$Nombre','$Direccion','$Nit', '$Telefono','$Email', '$CreatedAt','$UpdatedAt')";
+    $Id_Cliente = $data["Id_Cliente"];
+    $query ="CALL sp_editar_cliente('$Id_Cliente','$Estatus','$Nombre','$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt' )";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "proveedores", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "clientes", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -92,20 +92,20 @@ function handleUpdateProveedores($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "proveedores", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "clientes", "message" => $e->getMessage()]);
   }
 }
 
-function handleDeleteProveedores($database)
+function handleDeleteClientes($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
-    $Id_Proveedor = $data["Id_Proveedor"];
-    $query ="CALL sp_actualizar_proveedor_inactivo('$Id_Proveedor')"; 
+    $Id_Cliente = $data["Id_Cliente"];
+    $query ="CALL sp_actualizar_cliente_inactivo('$Id_Cliente')"; 
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "proveedores", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "clientes", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -118,15 +118,15 @@ function handleDeleteProveedores($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "proveedores", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "clientes", "message" => $e->getMessage()]);
   }
 }
 
-function handlePostProveedores($database)
+function handlePostClientes($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
-    $Id_Proveedor = $data["Id_Proveedor"];
+    $Id_Cliente = $data["Id_Cliente"];
     $Estatus = !$data["Estatus"];
     $Nombre = $data["Nombre"];
     $Direccion = $data["Direccion"];
@@ -136,11 +136,11 @@ function handlePostProveedores($database)
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
     
-    $query =  "CALL sp_insertar_proveedor('$Id_Proveedor','$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
+    $query =  "CALL sp_insertar_cliente('$Id_Cliente','$Estatus', '$Nombre', '$Direccion','$Nit','$Telefono','$Email','$CreatedAt','$UpdatedAt')";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "proveedores", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "clientes", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -153,7 +153,7 @@ function handlePostProveedores($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "proveedores", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "clientes", "message" => $e->getMessage()]);
   }
 }
 

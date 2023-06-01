@@ -8,26 +8,26 @@ if ($database->connect_error) {
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
   case 'GET':
-    handleGetCategorias($database);
+    handleGetCompras($database);
     break;
   case 'POST':
-    handlePostCategorias($database);
+    handlePostCompras($database);
     break;
   case 'PUT':
-    handleUpdateCategorias($database);
+    handleUpdateCompras($database);
     break;
   case 'DELETE':
-    handleDeleteCategorias($database);
+    handleDeleteCompras($database);
     break;
   default:
     http_response_code(405);
-    echo json_encode(array("message" => "Categorias: Método no permitido"));
+    echo json_encode(array("message" => "compras: Método no permitido"));
     break;
 }
 
-function handleGetCategoriasItem($database, $id)
+function handleGetComprasItem($database, $id)
 {
-  $query = "SELECT * FROM tbl_categoria WHERE Id_Categoria =$id";
+  $query = "SELECT * FROM tbl_compra WHERE Id_Compra =$id";
   $result = $database->query($query);
   $data = array();
   if ($result->num_rows > 0) {
@@ -39,22 +39,22 @@ function handleGetCategoriasItem($database, $id)
 }
 
 
-function handleGetCategorias($database)
+function handleGetCompras($database)
 {
   try {
-    $query = "SELECT * FROM tbl_categoria WHERE Id_Categoria =" . $_GET["Id_Categoria"];
+    $query = "SELECT * FROM tbl_compra";
     $result = $database->query($query);
     if ($result->num_rows > 0) {
       $data = array();
       while ($row = $result->fetch_assoc()) {
-        $row["categorias"] = handleGetCategoriasItem($database, $row["Id_Categoria"]);
+        $row["compras"] = handleGetComprasItem($database, $row["Id_Compra"]);
         $data[] = $row;
       }
       http_response_code(200);
       echo json_encode($data);
     } else {
       http_response_code(404);
-      echo json_encode(array("message" => "Categorias: No se encontraron datos"));
+      echo json_encode(array("message" => "compras: No se encontraron datos"));
     }
   } catch (Exception $e) {
     http_response_code(403);
@@ -62,19 +62,20 @@ function handleGetCategorias($database)
   }
 }
 
-function handleUpdateCategorias($database)
+function handleUpdateCompras($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
-    $Nombre = $data["Nombre"];
+    $Id_Proveedor = !$data["Id_Proveedor"];
+    $Fecha= $data["Fecha"];
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
-    $Id_Categoria = $data["Id_Categoria"];
-    $query = "CALL sp_editar_categoria('$Id_Categoria', '$Nombre', '$CreatedAt', '$UpdatedAt')";
+    $Id_Compra = $data["Id_Compra"];
+    $query = "UPDATE tbl_compra SET `Id_Compra` = '$Id_Compra',`Fecha` = '$Fecha',`CreatedAt` = '$CreatedAt',`UpdatedAt` = '$UpdatedAt' WHERE tbl_compra.Id_Compra= '$Id_Compra'";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "categorias", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "compras", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -87,20 +88,20 @@ function handleUpdateCategorias($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "categorias", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "compras", "message" => $e->getMessage()]);
   }
 }
 
-function handleDeleteCategorias($database)
+function handleDeleteCompras($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
-    $Id_Categoria = $data["Id_Categoria"];
-    $query = "DELETE FROM tbl_categoria WHERE tbl_categoria.Id_Categoria='$Id_Categoria'";
+    $Id_Compra = $data["Id_Compra"];
+    $query = "DELETE FROM tbl_compra WHERE tbl_compra.Id_Compra='$Id_Compra'";
     $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "categorias", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "compras", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -113,23 +114,25 @@ function handleDeleteCategorias($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "categorias", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "compras", "message" => $e->getMessage()]);
   }
 }
 
-function handlePostCategorias($database)
+function handlePostCompras($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
-    $Id_Categoria = $data["Id_Categoria"];
-    $Nombre=$data["Nombre"];
+    $Id_Compra = $data["Id_Compra"];
+    $Id_Proveedor = !$data["Id_Proveedor"];
+    $Fecha= $data["Fecha"];
     $CreatedAt = $data["CreatedAt"];
     $UpdatedAt = $data["UpdatedAt"];
-        $query = "CALL sp_insertar_categoria('$Id_Categoria', '$Nombre', '$CreatedAt', '$UpdatedAt')";
-        $result = $database->query($query);
+    
+    $query =  "CALL sp_insertar_compra('$Id_Compra', '$Id_Proveedor', '$Fecha','$CreatedAt','$UpdatedAt')";
+    $result = $database->query($query);
     if (!$result) {
       http_response_code(404);
-      echo json_encode(["controller" => "categorias", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "compras", "message" => mysqli_error($database)]);
     } else {
       $affectedRows = mysqli_affected_rows($database);
       if ($affectedRows > 0) {
@@ -142,7 +145,7 @@ function handlePostCategorias($database)
     }
   } catch (Exception $e) {
     http_response_code(403);
-    echo json_encode(["controller" => "categorias", "message" => $e->getMessage()]);
+    echo json_encode(["controller" => "compras", "message" => $e->getMessage()]);
   }
 }
 
