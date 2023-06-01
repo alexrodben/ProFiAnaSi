@@ -47,28 +47,34 @@ function handleGetVenta($database)
   }
 }
 
+
 function handleCreateVenta($database)
 {
   try {
     $data = json_decode(file_get_contents("php://input"), true);
     $id_cliente = $data["id_cliente"];
-    $fecha_venta = $data["fecha_venta"];
-    $total = $data["total"];
+    $fecha = $data["fecha"];
 
-    $query = "INSERT INTO `tbl_venta` (`id_venta`, `id_cliente`, `fecha_venta`, `total`) 
-              VALUES (NULL, '$id_cliente', '$fecha_venta', '$total')";
-    $result = $database->query($query);
-    if (!$result) {
+    // Verificar si la venta ya está registrada
+    $query_check = "SELECT COUNT(*) as record_count FROM tbl_venta WHERE Id_Cliente = $id_cliente AND Fecha = '$fecha'";
+    $result_check = $database->query($query_check);
+    $row_check = $result_check->fetch_assoc();
+    $record_count = $row_check["record_count"];
+
+    if ($record_count > 0) {
       http_response_code(400);
-      echo json_encode(["controller" => "venta", "message" => mysqli_error($database)]);
+      echo json_encode(["controller" => "venta", "message" => "Error: La venta ya está registrada."]);
     } else {
-      $affectedRows = mysqli_affected_rows($database);
-      if ($affectedRows > 0) {
+      // Llamada al procedimiento almacenado
+      $query = "CALL sp_insertar_venta($id_cliente, '$fecha')";
+      $result = $database->query($query);
+
+      if (!$result) {
+        http_response_code(400);
+        echo json_encode(["controller" => "venta", "message" => mysqli_error($database)]);
+      } else {
         http_response_code(201);
         echo json_encode(array("message" => "Se ha creado la venta correctamente"));
-      } else {
-        http_response_code(500);
-        echo json_encode(array("message" => "No se pudo crear la venta"));
       }
     }
   } catch (Exception $e) {
@@ -76,6 +82,7 @@ function handleCreateVenta($database)
     echo json_encode(["controller" => "venta", "message" => $e->getMessage()]);
   }
 }
+
 
 function handleUpdateVenta($database)
 {
