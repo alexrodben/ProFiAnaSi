@@ -78,7 +78,7 @@ function handlePostAuth($database)
     if (mysqli_stmt_num_rows($stmt) == 1) {
       mysqli_stmt_bind_result($stmt, $id_usuario);
       mysqli_stmt_fetch($stmt);
-        generateToken($database, $id_usuario);
+      generateToken($database, $id_usuario);
     } else {
       http_response_code(401);
       echo json_encode(array("message" => "Credenciales incorrectas"));
@@ -114,3 +114,4 @@ function generateToken($database, $id_usuario)
 }
 
 $database->close();
+?>
