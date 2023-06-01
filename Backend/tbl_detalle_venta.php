@@ -52,25 +52,20 @@ function handleCreateDetalleVenta($database)
   try {
     $data = json_decode(file_get_contents("php://input"), true);
     $id_venta = $data["id_venta"];
-    $producto = $data["producto"];
+    $id_producto = $data["id_producto"];
     $cantidad = $data["cantidad"];
-    $precio_unitario = $data["precio_unitario"];
+    $valor_unitario = $data["valor_unitario"];
 
-    $query = "INSERT INTO `tbl_detalle_venta` (`id_detalle_venta`, `id_venta`, `producto`, `cantidad`, `precio_unitario`) 
-              VALUES (NULL, '$id_venta', '$producto', '$cantidad', '$precio_unitario')";
+    // Llamada al procedimiento almacenado
+    $query = "CALL sp_insertar_detalle_venta($id_venta, $id_producto, $cantidad, $valor_unitario)";
     $result = $database->query($query);
+
     if (!$result) {
       http_response_code(400);
       echo json_encode(["controller" => "detalle_venta", "message" => mysqli_error($database)]);
     } else {
-      $affectedRows = mysqli_affected_rows($database);
-      if ($affectedRows > 0) {
-        http_response_code(201);
-        echo json_encode(array("message" => "Se ha creado el detalle de venta correctamente"));
-      } else {
-        http_response_code(500);
-        echo json_encode(array("message" => "No se pudo crear el detalle de venta"));
-      }
+      http_response_code(201);
+      echo json_encode(array("message" => "Se ha creado el detalle de venta correctamente"));
     }
   } catch (Exception $e) {
     http_response_code(403);
