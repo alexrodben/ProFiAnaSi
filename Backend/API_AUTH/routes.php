@@ -8,12 +8,18 @@ http_response_code(500);
 $complete_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $current_url = $_SERVER['REQUEST_URI'];
 $current_url = preg_replace("/\?.*/", "", $current_url);
-$folder = "apiSanarate/api";
+$folder = "api/secure";
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'OPTIONS') {
     http_response_code(200);
     echo json_encode(array());
+    return;
+}
+
+// Ruta específica para manejar la solicitud de favicon.ico
+if ($current_url === '/favicon.ico') {
+    http_response_code(204); // Respuesta exitosa sin contenido
     return;
 }
 

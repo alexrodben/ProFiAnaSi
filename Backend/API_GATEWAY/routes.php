@@ -60,22 +60,55 @@ if ($current_url === '/favicon.ico') {
 }
 
 if (strpos($current_url, '/api/secure') === 0) {
-    $secure_server_ip = '192.168.28.51'; 
+    $secure_server_ip = '192.168.28.51';
     $secure_server_url = "http://$secure_server_ip" . $current_url;
     redirectRequest($secure_server_url, $method, $headerValue);
+    return;
 }
 
 if (strpos($current_url, '/api/app') === 0) {
     if ($authHeader) {
-        $api_server_ip = '192.168.28.52';
-        $api_server_url = "http://$api_server_ip" . $current_url;
-        redirectRequest($api_server_url, $method, $headerValue);
+        $auth_server_ip = '192.168.28.51';
+        $auth_server_url = "http://$auth_server_ip/api/secure/info";
+
+        // Realizar la solicitud al servidor de autenticación
+        $auth_response = file_get_contents($auth_server_url, false, stream_context_create([
+            'http' => [
+                'header' => "Content-type: application/json\r\n" .
+                    "Authorization: $authHeader\r\n",
+                'method' => 'POST',
+                'ignore_errors' => true
+            ]
+        ]));
+
+        // Obtener el código de respuesta del servidor de autenticación
+        $auth_response_code = $http_response_header[0];
+        $auth_response_code = (int)substr($auth_response_code, 9, 3);
+
+        // Verificar el código de respuesta y tomar la acción correspondiente
+        if ($auth_response_code === 200) {
+            // El token es válido, continuar con la redirección
+            $api_server_ip = '192.168.28.52';
+            $api_server_url = "http://$api_server_ip" . $current_url;
+            redirectRequest($api_server_url, $method, $headerValue);
+            return;
+        } else {
+            // El token no es válido, retornar código de respuesta y mensaje de error de la API de autenticación
+            $auth_response_data = json_decode($auth_response, true);
+            $auth_response_message = isset($auth_response_data['message']) ? $auth_response_data['message'] : 'Token no válido';
+
+            http_response_code($auth_response_code);
+            echo json_encode(array("message" => $auth_response_message));
+            return;
+        }
     } else {
+        // No se proporcionó el token de autenticación, retornar código de respuesta 403 y mensaje de error
         http_response_code(403);
-        echo json_encode(array("message" => "No estas autenticado: " . $complete_url));
+        echo json_encode(array("message" => "No estás autenticado: " . $complete_url));
+        return;
     }
 }
 
 http_response_code(404);
 echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
-?>
+return;

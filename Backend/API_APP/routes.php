@@ -17,6 +17,13 @@ if ($method === 'OPTIONS') {
     return;
 }
 
+// Ruta específica para manejar la solicitud de favicon.ico
+if ($current_url === '/favicon.ico') {
+    http_response_code(204); // Respuesta exitosa sin contenido
+    return;
+}
+
+
 include_once 'dbconfig.php';
 $database = new mysqli($host, $username, $password, $dbname);
 if ($database->connect_error) {
