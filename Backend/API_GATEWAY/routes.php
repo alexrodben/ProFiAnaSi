@@ -18,6 +18,63 @@ if ($method === 'OPTIONS') {
 $headers = getallheaders();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
 
+// Definir las rutas privadas y sus servidores correspondientes
+$privateRoutes = array(
+    "/api/cardex" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta del cardex"
+    ),
+    "/api/categorias" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de categorías"
+    ),
+    "/api/clientes" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de clientes"
+    ),
+    "/api/compras" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de compras"
+    ),
+    "/api/detalleCompras" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de detalle de compras"
+    ),
+    "/api/detalleVentas" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de detalle de ventas"
+    ),
+    "/api/productos" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de productos"
+    ),
+    "/api/proveedores" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de proveedores"
+    ),
+    "/api/ventas" => array(
+        "server" => "192.168.28.52",
+        "description" => "Ruta de ventas"
+    ),
+    "/api/usuarios" => array(
+        "server" => "192.168.28.51",
+        "description" => "Ruta de usuarios"
+    )
+);
+
+// Definir las rutas públicas y sus servidores correspondientes
+$publicRoutes = array(
+    "/api/auth" => array(
+        "server" => "192.168.28.51",
+        "description" => "Ruta de autenticación"
+    ),
+    "/api/info" => array(
+        "server" => "192.168.28.51",
+        "description" => "Ruta de información"
+    )
+);
+
+
 // Método para redireccionar la solicitud al servidor correspondiente
 function redirectRequest($url, $method, $authHeader)
 {
@@ -59,17 +116,35 @@ if ($current_url === '/favicon.ico') {
     return;
 }
 
-if (strpos($current_url, '/api/secure') === 0) {
-    $secure_server_ip = '192.168.28.51';
-    $secure_server_url = "http://$secure_server_ip" . $current_url;
-    redirectRequest($secure_server_url, $method, $headerValue);
+// Listar todas la rutas disponibles
+if ($current_url === "/api/routes") {
+    // Crear un array para almacenar las rutas y su tipo
+    $routes = array();
+    // Agregar las rutas privadas con el tipo "requiere seguridad"
+    foreach ($privateRoutes as $route => $data) {
+        $routes[$route] = $data['description'] . " - requiere autenticacion";
+    }
+
+    // Agregar las rutas públicas con el tipo "libre"
+    foreach ($publicRoutes as $route => $data) {
+        $routes[$route] = $data['description'];
+    }
+    http_response_code(200); // Respuesta exitosa sin contenido
+    echo json_encode($routes);
     return;
 }
 
-if (strpos($current_url, '/api/app') === 0) {
+// Ruutas del Gateway
+if (array_key_exists($current_url, $privateRoutes)) {
     if ($authHeader) {
         $auth_server_ip = '192.168.28.51';
-        $auth_server_url = "http://$auth_server_ip/api/secure/info";
+        $auth_server_url = "http://$auth_server_ip/api/info";
+
+        // Crear el array con el token
+        $data = array('token' => $authHeader);
+
+        // Convertir el array en formato JSON
+        $json_data = json_encode($data);
 
         // Realizar la solicitud al servidor de autenticación
         $auth_response = file_get_contents($auth_server_url, false, stream_context_create([
@@ -77,6 +152,7 @@ if (strpos($current_url, '/api/app') === 0) {
                 'header' => "Content-type: application/json\r\n" .
                     "Authorization: $authHeader\r\n",
                 'method' => 'POST',
+                'content' => $json_data, // Agregar el contenido JSON en el cuerpo de la solicitud
                 'ignore_errors' => true
             ]
         ]));
@@ -88,27 +164,32 @@ if (strpos($current_url, '/api/app') === 0) {
         // Verificar el código de respuesta y tomar la acción correspondiente
         if ($auth_response_code === 200) {
             // El token es válido, continuar con la redirección
-            $api_server_ip = '192.168.28.52';
-            $api_server_url = "http://$api_server_ip" . $current_url;
-            redirectRequest($api_server_url, $method, $headerValue);
+            $privateServer = $privateRoutes[$current_url]['server'];
+            $privateServerUrl = "http://$privateServer" . $current_url;
+            redirectRequest($privateServerUrl, $method, $authHeader);
             return;
         } else {
             // El token no es válido, retornar código de respuesta y mensaje de error de la API de autenticación
             $auth_response_data = json_decode($auth_response, true);
             $auth_response_message = isset($auth_response_data['message']) ? $auth_response_data['message'] : 'Token no válido';
-
             http_response_code($auth_response_code);
             echo json_encode(array("message" => $auth_response_message));
             return;
         }
     } else {
-        // No se proporcionó el token de autenticación, retornar código de respuesta 403 y mensaje de error
         http_response_code(403);
-        echo json_encode(array("message" => "No estás autenticado: " . $complete_url));
+        echo json_encode(array("message" => "No hay token o es un token invalido"));
         return;
     }
 }
 
+if (array_key_exists($current_url, $publicRoutes)) {
+    $publicServer = $publicRoutes[$current_url]['server'];
+    $publicServerUrl = "http://$publicServer" . $current_url;
+    redirectRequest($publicServerUrl, $method, $authHeader);
+    return;
+}
+
 http_response_code(404);
-echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
+echo json_encode(array("message" => "Ruta gateway no encontrada: " . $complete_url));
 return;

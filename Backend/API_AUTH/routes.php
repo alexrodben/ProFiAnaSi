@@ -8,7 +8,6 @@ http_response_code(500);
 $complete_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $current_url = $_SERVER['REQUEST_URI'];
 $current_url = preg_replace("/\?.*/", "", $current_url);
-$folder = "api/secure";
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'OPTIONS') {
@@ -26,17 +25,17 @@ if ($current_url === '/favicon.ico') {
 include_once 'dbconfig.php';
 $database = new mysqli($host, $username, $password, $dbname);
 if ($database->connect_error) {
-    die("Conexión fallida: " . $database->connect_error);
+    die(json_encode(array("message" => "Conexión fallida: " . $database->connect_error)));
 }
 
 switch ($current_url) {
-    case ("/{$folder}/usuarios"):
+    case ("/api/usuarios"):
         include_once 'routes/usuarios.php';
         break;
-    case ("/{$folder}/auth"):
+    case ("/api/auth"):
         include_once 'routes/auth.php';
         break;
-    case ("/{$folder}/info"):
+    case ("/api/info"):
         include_once 'routes/info.php';
         break;
     default:

@@ -8,7 +8,6 @@ http_response_code(500);
 $complete_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $current_url = $_SERVER['REQUEST_URI'];
 $current_url = preg_replace("/\?.*/", "", $current_url);
-$folder = "api/app";
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'OPTIONS') {
@@ -27,37 +26,37 @@ if ($current_url === '/favicon.ico') {
 include_once 'dbconfig.php';
 $database = new mysqli($host, $username, $password, $dbname);
 if ($database->connect_error) {
-    die("Conexión fallida: " . $database->connect_error);
+    die(json_encode(array("message" => "Conexión fallida: " . $database->connect_error)));
 }
 
 if (true) {
     switch ($current_url) {
 
-        case ("/{$folder}/cardex"):
+        case ("/api/cardex"):
             include_once 'routes/cardex.php';
             break;
-        case ("/{$folder}/categorias"):
+        case ("/api/categorias"):
             include_once 'routes/categorias.php';
             break;
-        case ("/{$folder}/clientes"):
+        case ("/api/clientes"):
             include_once 'routes/clientes.php';
             break;
-        case ("/{$folder}/compras"):
+        case ("/api/compras"):
             include_once 'routes/compras.php';
             break;
-        case ("/{$folder}/detalleCompras"):
+        case ("/api/detalleCompras"):
             include_once 'routes/detalle_compras.php';
             break;
-        case ("/{$folder}/detalleVentas"):
+        case ("/api/detalleVentas"):
             include_once 'routes/detalle_venta.php';
             break;
-        case ("/{$folder}/productos"):
+        case ("/api/productos"):
             include_once 'routes/productos.php';
             break;
-        case ("/{$folder}/proveedores"):
+        case ("/api/proveedores"):
             include_once 'routes/proveedores.php';
             break;
-        case ("/{$folder}/ventas"):
+        case ("/api/ventas"):
             include_once 'routes/ventas.php';
             break;
         default:
