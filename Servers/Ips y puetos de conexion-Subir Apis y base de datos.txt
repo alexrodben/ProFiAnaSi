@@ -1,0 +1,72 @@
+ssh debian@181.189.131.142 -p 727
+
+
+Equipo de Servidores
+IP pública 181.189.131.142
+
+Equipo 1 - Gateway API 
+IP privada 192.168.28.50
+Puerto SSH 750
+Puerto https 80 público 80
+Servicios Apache(falta php)
+
+Equipo 2 - Security 
+IP privada 192.168.28.51
+Puerto SSH 751
+Puerto DB 3306 público 851
+Puerto https 80 público 8081
+Servicios Apache, MySQL(falta php)
+
+IP privada 192.168.28.52
+Puerto SSH 752
+Puerto DB 3306 público 852
+Puerto https 80 público 8082
+Servicios Apache, MySQL (falta php)
+
+
+(*) Significa instalado
+
+Gateway 
+Apache(*) 
+php (*)
+
+
+security
+apache(*)
+mysql(*)
+php (*)
+
+Tercero
+apache(*)
+mysql(*)
+php (*)
+
+
+
+data sql (*)
+.52
+api app
+.52 var/www(*)
+Se crearon usuarios para las base de datos
+CREATE USER 'data'@'localhost' IDENTIFIED BY 'drF12345fa@';
+GRANT ALL PRIVILEGES ON * . * TO 'data'@'localhost';
+Se cargo el archivo APP_structure.sql, APP_data.sql, APP_trigger.sql y APP_procedure.sql
+
+
+
+
+security .51
+api auth (*)
+.net
+auth.sql(*)
+
+CREATE USER 'seguridad'@'localhost' IDENTIFIED BY 'mdsF12345@';
+GRANT ALL PRIVILEGES ON * . * TO 'seguridad'@'localhost';
+Se cargo la base de datos auth.sql
+
+
+Gateway
+50 api gateway(*)
+
+
+
