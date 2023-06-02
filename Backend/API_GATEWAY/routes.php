@@ -3,7 +3,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-http_response_code(404);
 
 $complete_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 $current_url = $_SERVER['REQUEST_URI'];
@@ -17,10 +16,7 @@ if ($method === 'OPTIONS') {
 }
 
 $headers = getallheaders();
-$headerValue = isset($headers['Authorization']) ? $headers['Authorization'] : '';
-
-// Obtener la IP del servidor actual
-$current_server_ip = $_SERVER['SERVER_ADDR'];
+$authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
 
 // Método para redireccionar la solicitud al servidor correspondiente
 function redirectRequest($url, $method, $authHeader)
@@ -32,7 +28,7 @@ function redirectRequest($url, $method, $authHeader)
     $options = array(
         'http' => array(
             'header'  => "Content-type: application/json\r\n" .
-                         "Authorization: $authHeader\r\n",
+                "Authorization: $authHeader\r\n",
             'method'  => $method,
             'content' => $postData,
             'ignore_errors' => true // Permite obtener la respuesta incluso si hay errores HTTP en el servidor de destino
@@ -57,22 +53,29 @@ function redirectRequest($url, $method, $authHeader)
     echo $response;
 }
 
-// Rutas públicas
+// Ruta específica para manejar la solicitud de favicon.ico
+if ($current_url === '/favicon.ico') {
+    http_response_code(204); // Respuesta exitosa sin contenido
+    return;
+}
+
 if (strpos($current_url, '/api/secure') === 0) {
-    $secure_server_ip = '192.168.28.51'; // IP del servidor de rutas protegidas
+    $secure_server_ip = '192.168.28.51'; 
     $secure_server_url = "http://$secure_server_ip" . $current_url;
     redirectRequest($secure_server_url, $method, $headerValue);
 }
 
-if ($headerValue) {
-    // Rutas protegidas
-    if (strpos($current_url, '/api/app') === 0) {
-        // Redireccionar la solicitud al servidor de rutas libres
-        $api_server_ip = '192.168.28.52'; // IP del servidor de rutas libres
+if (strpos($current_url, '/api/app') === 0) {
+    if ($authHeader) {
+        $api_server_ip = '192.168.28.52';
         $api_server_url = "http://$api_server_ip" . $current_url;
         redirectRequest($api_server_url, $method, $headerValue);
     } else {
-        http_response_code(404);
-        echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
+        http_response_code(403);
+        echo json_encode(array("message" => "No estas autenticado: " . $complete_url));
     }
 }
+
+http_response_code(404);
+echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
+?>
