@@ -28,7 +28,7 @@ import Login from "./pages/login/Login";
 import ProductPage from "./pages/product/ProductPage";
 import ProductEdit from "./pages/product/ProductEdit";
 import SupplierPage from "./pages/supplier/SupplierPage";
-import CustomerPage from "./pages/customers/CustomerPage";
+import CustomerPage from "./pages/customer/CustomerPage";
 import KardexPage from "./pages/kardex/KardexPage";
 import CategoryPage from "./pages/category/CategoryPage";
 import ComprasPage from "./pages/compras/ComprasPage";
@@ -58,38 +58,27 @@ const App: React.FC = () => {
 
             {/* Products Routes */}
             <Route path="/page/products" exact component={ProductPage} />
-            <Route path="/page/products/:id" exact component={ProductEdit} />
 
-
-             {/* Customers Routes */}
-             <Route path="/page/customers" exact component={CustomerPage} />
-            <Route path="/page/customers/:id" exact component={Page} />
-            
+            {/* Customers Routes */}
+            <Route path="/page/customers" exact component={CustomerPage} />
 
             {/* Suppliers Routes */}
             <Route path="/page/suppliers" exact component={SupplierPage} />
-            <Route path="/page/suppliers/:id" exact component={Page} />
-            
-            
+
             {/* Kardex Routes */}
             <Route path="/page/kardex" exact component={KardexPage} />
-            <Route path="/page/kardex/:id" exact component={Page} />
 
             {/* Category Routes */}
             <Route path="/page/category" exact component={CategoryPage} />
-            <Route path="/page/category/:id" exact component={Page} />
 
             {/* Compras Routes */}
             <Route path="/page/compras" exact component={ComprasPage} />
-            <Route path="/page/compras/:id" exact component={Page} />
 
             {/* Ventas Routes */}
             <Route path="/page/ventas" exact component={VentasPage} />
-            <Route path="/page/ventas/:id" exact component={Page} />
 
             {/* Usuarios Routes */}
             <Route path="/page/users" exact component={UsersPage} />
-            <Route path="/page/users/:id" exact component={Page} />
 
             <Route path={["/page/home", "/page/about", "/page/contact"]} exact component={Page} />
           </IonRouterOutlet>
