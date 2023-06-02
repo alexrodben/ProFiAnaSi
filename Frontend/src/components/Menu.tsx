@@ -54,14 +54,8 @@ const appPages: AppPage[] = [
     mdIcon: cubeSharp,
   },
   {
-    title: "Transacciones",
-    url: "/page/orders",
-    iosIcon: receiptOutline,
-    mdIcon: receiptSharp,
-  },
-  {
     title: "Clientes",
-    url: "/page/customers",
+    url: "/page/custuomers",
     iosIcon: personOutline,
     mdIcon: personSharp,
   },
@@ -74,6 +68,24 @@ const appPages: AppPage[] = [
   {
     title: "Proveedores",
     url: "/page/suppliers",
+    iosIcon: newspaperOutline,
+    mdIcon: newspaperSharp,
+  },
+  {
+    title: "Categorías",
+    url: "/page/Category",
+    iosIcon: newspaperOutline,
+    mdIcon: newspaperSharp,
+  },
+  {
+    title: "Compras",
+    url: "/page/compras",
+    iosIcon: newspaperOutline,
+    mdIcon: newspaperSharp,
+  },
+  {
+    title: "Ventas",
+    url: "/page/ventas",
     iosIcon: newspaperOutline,
     mdIcon: newspaperSharp,
   },
