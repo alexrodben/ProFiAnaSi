@@ -22,19 +22,50 @@ $headerValue = isset($headers['Authorization']) ? $headers['Authorization'] : ''
 // Obtener la IP del servidor actual
 $current_server_ip = $_SERVER['SERVER_ADDR'];
 
+// Método para redireccionar la solicitud al servidor correspondiente
+function redirectRequest($url, $method, $authHeader)
+{
+    // Obtener los datos de la solicitud original
+    $postData = file_get_contents('php://input');
+
+    // Configurar la nueva solicitud al servidor de destino
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/json\r\n" .
+                         "Authorization: $authHeader\r\n",
+            'method'  => $method,
+            'content' => $postData,
+            'ignore_errors' => true // Permite obtener la respuesta incluso si hay errores HTTP en el servidor de destino
+        )
+    );
+    $context  = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+    // Obtener los headers de respuesta del servidor de destino
+    $responseHeaders = $http_response_header;
+
+    // Pasar los headers de respuesta al cliente
+    foreach ($responseHeaders as $header) {
+        header($header);
+    }
+
+    // Pasar el código de respuesta del servidor de destino al cliente
+    $responseCode = $http_response_header[0];
+    http_response_code((int)substr($responseCode, 9, 3));
+
+    // Pasar la respuesta del servidor de destino al cliente
+    echo $response;
+}
+
+// Rutas públicas
+if (strpos($current_url, '/api/secure') === 0) {
+    $secure_server_ip = '192.168.28.51'; // IP del servidor de rutas protegidas
+    $secure_server_url = "http://$secure_server_ip" . $current_url;
+    redirectRequest($secure_server_url, $method, $headerValue);
+}
+
 if ($headerValue) {
     // Rutas protegidas
-    if (strpos($current_url, '/api/secure') === 0) {
-        // Redireccionar la solicitud al servidor de rutas protegidas
-        $secure_server_ip = '192.168.28.51'; // IP del servidor de rutas protegidas
-        $secure_server_url = "http://$secure_server_ip" . $current_url;
-        redirectRequest($secure_server_url, $method, $headerValue);
-    } else {
-        http_response_code(404);
-        echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
-    }
-} else {
-    // Rutas libres
     if (strpos($current_url, '/api/app') === 0) {
         // Redireccionar la solicitud al servidor de rutas libres
         $api_server_ip = '192.168.28.52'; // IP del servidor de rutas libres
@@ -44,49 +75,4 @@ if ($headerValue) {
         http_response_code(404);
         echo json_encode(array("message" => "Ruta no encontrada: " . $complete_url));
     }
-}
-
-// Redirigir la solicitud al servidor correspondiente
-function redirectRequest($url, $method, $authHeader)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-
-    // Si es una solicitud POST, agregar el cuerpo de la solicitud
-    if ($method === 'POST') {
-        $postData = file_get_contents('php://input');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-    }
-
-    // Pasar los headers originales al servidor de destino
-    $headers = getallheaders();
-    $headerArray = array();
-    foreach ($headers as $key => $value) {
-        if ($key !== 'Host' && $key !== 'Authorization') {
-            $headerArray[] = "$key: $value";
-        }
-    }
-    $headerArray[] = "Authorization: $authHeader";
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArray);
-
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    // Pasar los headers originales de respuesta al cliente
-    $responseHeaders = array();
-    foreach (curl_getinfo($ch) as $key => $value) {
-        if (strpos($key, 'response_') === 0) {
-            $headerKey = str_replace('response_', '', $key);
-            $responseHeaders[$headerKey] = $value;
-        }
-    }
-    foreach ($responseHeaders as $key => $value) {
-        header("$key: $value");
-    }
-
-    http_response_code($httpCode);
-    echo $response;
 }
