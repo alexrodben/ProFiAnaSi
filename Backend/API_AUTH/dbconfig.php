@@ -1,5 +1,5 @@
 <?php 
 $host = "localhost";
-$username = "root";
-$password = "";
-$dbname= "politicalpoll";
+$username = "nombre_usuario";
+$password = "contraseña";
+$dbname = "inventory_control_auth";

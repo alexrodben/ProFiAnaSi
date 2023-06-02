@@ -1,5 +1,5 @@
 <?php 
 $host = "localhost";
-$username = "root";
-$password = "";
-$dbname= "inventory_control";
+$username = "nombre_usuario";
+$password = "contraseña";
+$dbname = "inventory_control";
