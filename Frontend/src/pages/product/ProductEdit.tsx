@@ -32,36 +32,37 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
+  const edit = async () => {
     if (
-      product.name &&
-      product.sku &&
-      product.status &&
-      product.description &&
-      product.minStock &&
-      product.maxStock &&
-      product.stock &&
-      product.image &&
-      product.unitPrice &&
-      product.registrationDate &&
-      product.updateDate
+      product.Nombre &&
+      product.SKU &&
+      product.Estado &&
+      product.Descripcion &&
+      product.Existencia_minima &&
+      product.Existencia_maxima &&
+      product.Stock &&
+      product.Imagen &&
+      product.Valor_Unitario &&
+      product.CreatedAt &&
+      product.UpdatedAt
     ) {
       const newProduct: productFormat = {
-        id: Math.round(Math.random() * 10000).toString(),
-        name: product.name,
-        sku: product.sku,
-        status: product.status,
-        description: product.description,
-        minStock: product.minStock,
-        maxStock: product.maxStock,
-        stock: product.stock,
-        image: product.image,
-        unitPrice: product.unitPrice,
-        registrationDate: product.registrationDate,
-        updateDate: product.updateDate,
+        Id_Producto: product.Id_Producto,
+        Nombre: product.Nombre,
+        SKU: product.SKU,
+        Id_Categoria: product.category,
+        Estado: product.Estado,
+        Descripcion: product.Descripcion,
+        Existencia_minima: product.Existencia_minima,
+        Existencia_maxima: product.Existencia_maxima,
+        Stock: product.Stock,
+        Imagen: product.Imagen,
+        Valor_Unitario: product.Valor_Unitario,
+        CreatedAt: product.CreatedAt,
+        UpdatedAt: product.UpdatedAt,
       };
-      editProductData(newProduct);
-      history.push("products");
+      let edit = await editProductData(newProduct);
+      if (edit) history.push("/products");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -83,10 +84,10 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.id;
-            removeProductData(id);
-            history.push("products");
+          handler: async () => {
+            let Id_Producto = item.Id_Producto;
+            let del = await removeProductData(Id_Producto);
+            if (del) history.push("/products");
           },
         },
       ],
@@ -104,7 +105,7 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{product.name}</IonTitle>
+          <IonTitle>{product.Nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -119,8 +120,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Nombre</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.name = e.detail.value)}
-                    value={product.name}
+                    onIonChange={(e) => (product.Nombre = e.detail.value)}
+                    value={product.Nombre}
                     placeholder="Nombre del producto"
                     required
                   ></IonInput>
@@ -132,9 +133,9 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">SKU</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.sku = e.detail.value)}
+                    onIonChange={(e) => (product.SKU = e.detail.value)}
                     placeholder="SKU del producto"
-                    value={product.sku}
+                    value={product.SKU}
                     required
                   ></IonInput>
                 </IonItem>
@@ -145,9 +146,9 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Estado</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.status = e.detail.value)}
+                    onIonChange={(e) => (product.Estado = e.detail.value)}
                     placeholder="Estado del producto"
-                    value={product.status}
+                    value={product.Estado}
                     required
                   ></IonInput>
                 </IonItem>
@@ -158,9 +159,9 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Descripción</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.description = e.detail.value)}
+                    onIonChange={(e) => (product.Descripcion = e.detail.value)}
                     placeholder="Descripción del producto"
-                    value={product.description}
+                    value={product.Descripcion}
                     required
                   ></IonInput>
                 </IonItem>
@@ -171,8 +172,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Stock Mínimo</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.minStock = e.detail.value)}
-                    value={product.minStock}
+                    onIonChange={(e) => (product.Existencia_minima = e.detail.value)}
+                    value={product.Existencia_minima}
                     placeholder="Stock mínimo del producto"
                     required
                   ></IonInput>
@@ -184,8 +185,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Stock Máximo</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.maxStock = e.detail.value)}
-                    value={product.maxStock}
+                    onIonChange={(e) => (product.Existencia_maxima = e.detail.value)}
+                    value={product.Existencia_maxima}
                     placeholder="Stock máximo del producto"
                     required
                   ></IonInput>
@@ -197,8 +198,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Stock</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.stock = e.detail.value)}
-                    value={product.stock}
+                    onIonChange={(e) => (product.Stock = e.detail.value)}
+                    value={product.Stock}
                     placeholder="Stock del producto"
                     required
                   ></IonInput>
@@ -210,9 +211,9 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Imagen</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.image = e.detail.value)}
-                    value={product.image}
-                    placeholder="URL de la imagen del producto"
+                    onIonChange={(e) => (product.Imagen = e.detail.value)}
+                    value={product.Imagen}
+                    placeholder="URL de la Imagenn del producto"
                     required
                   ></IonInput>
                 </IonItem>
@@ -223,8 +224,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Precio Unitario</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.unitPrice = e.detail.value)}
-                    value={product.unitPrice}
+                    onIonChange={(e) => (product.Valor_Unitario = e.detail.value)}
+                    value={product.Valor_Unitario}
                     placeholder="Precio unitario del producto"
                     required
                   ></IonInput>
@@ -236,8 +237,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Registro</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.registrationDate = e.detail.value)}
-                    value={product.registrationDate}
+                    onIonChange={(e) => (product.CreatedAt = e.detail.value)}
+                    value={product.CreatedAt}
                     placeholder="Fecha de Registro del producto"
                     required
                     disabled
@@ -250,8 +251,8 @@ const ProductEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Actualización</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (product.updateDate = e.detail.value)}
-                    value={product.updateDate}
+                    onIonChange={(e) => (product.UpdatedAt = e.detail.value)}
+                    value={product.UpdatedAt}
                     placeholder="Fecha de Actualización del producto"
                     required
                     disabled

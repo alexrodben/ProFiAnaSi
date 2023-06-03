@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
@@ -20,26 +21,31 @@ import {
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
-import { reloadDataUsers, searchDataUsers } from "./UsersApi";
-import { UsersFormat } from "./UsersFormat";
+import { searchUserData } from "./UserApi";
+import { userFormat } from "./UserFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
-import UsersAdd from "./UsersAdd";
-import UsersEdit from "./UsersEdit";
+import UsersAdd from "./UserAdd";
+import UsersEdit from "./UserEdit";
 
 const UsersList: React.FC = () => {
-  const [usersData, setUsersData] = useState<UsersFormat[]>([]);
+  const [userData, setUsersData] = useState<userFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     searchUsers();
   }, []);
 
-  const searchUsers = () => {
-    let list = searchDataUsers();
-    setUsersData(list);
+  const searchUsers = async () => {
+    setShowLoading(true)
+    let list = await searchUserData();
+    setTimeout(() => {
+      setUsersData(list);
+      setShowLoading(false);
+    }, 1000);
   };
 
   const reload = () => {
-    reloadDataUsers();
+    localStorage.removeItem("users");
     searchUsers();
   };
 
@@ -58,11 +64,16 @@ const UsersList: React.FC = () => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Users</IonTitle>
+          <IonTitle>Usuarios</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -83,12 +94,12 @@ const UsersList: React.FC = () => {
             <IonListHeader color="primary">
               <IonLabel>Listado de Usuarios</IonLabel>
             </IonListHeader>
-            {usersData.map((user, index) => {
+            {userData.map((user, index) => {
               return (
                 <IonItem key={index}>
                   <IonThumbnail slot="start">
                     <img
-                      alt={user.id}
+                      alt={user.id_usuario}
                       src="https://ionicframework.com/docs/img/demos/thumbnail.svg"
                     />
                   </IonThumbnail>

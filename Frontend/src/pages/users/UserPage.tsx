@@ -2,7 +2,7 @@
 import React from "react";
 import "./../Page.css";
 
-import UsersList from "./UsersList";
+import UsersList from "./UserList";
 import { IonNav, IonPage } from "@ionic/react";
 
 const UsersPage: React.FC = () => {

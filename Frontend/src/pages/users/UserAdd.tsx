@@ -18,8 +18,9 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { saveDataUser } from "./UsersApi";
+import { saveUserData } from "./UserApi";
 import { useHistory } from "react-router";
+import { userFormat } from "./UserFormat";
 
 const UsersAdd: React.FC = () => {
   const [user, setUser] = useState<any>({});
@@ -27,7 +28,7 @@ const UsersAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
+  const save = async () => {
     if (
       user.userId &&
       user.username &&
@@ -35,18 +36,17 @@ const UsersAdd: React.FC = () => {
       user.firstname &&
       user.lastname
     ) {
-      const newUser = {
-        id: Math.round(Math.random() * 10000).toString(),
-        userId: user.userId,
+      const newUser: userFormat = {
+        id_usuario: Math.round(Math.random() * 10000).toString(),
         username: user.username,
         password: user.password,
         firstname: user.firstname,
         lastname: user.lastname
       };
-      let saved = saveDataUser(newUser);
+      let saved = await saveUserData(newUser);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("/users");
       }
     } else {
       present({
@@ -60,7 +60,7 @@ const UsersAdd: React.FC = () => {
 
   useEffect(() => {
     setUser({
-      id: "",
+      id_usuario: "",
       userId: "",
       username: "",
       password: "",

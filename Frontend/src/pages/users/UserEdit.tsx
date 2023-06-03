@@ -18,38 +18,37 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close, trash } from "ionicons/icons";
-import { UsersFormat } from "./UsersFormat";
-import { editDataUser, removeDataUser } from "./UsersApi";
+import { userFormat } from "./UserFormat";
+import { editUserData, removeUserData } from "./UserApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
-  item: UsersFormat;
+  item: userFormat;
 }
 
 const UsersEdit: React.FC<ContainerProps> = ({ item }) => {
-  const [user, setUser] = useState<UsersFormat>({} as UsersFormat);
+  const [user, setUser] = useState<userFormat>({} as userFormat);
   const [present] = useIonToast();
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
+  const edit = async () => {
     if (
-      user.userId &&
+      user.id_usuario &&
       user.username &&
       user.password &&
       user.firstname &&
       user.lastname
     ) {
-      const newUser: UsersFormat = {
-        id: item.id,
-        userId: user.userId,
+      const newUser: userFormat = {
+        id_usuario: user.id_usuario,
         username: user.username,
         password: user.password,
         firstname: user.firstname,
         lastname: user.lastname,
       };
-      editDataUser(newUser);
-      history.push("/users");
+      let edit = await editUserData(newUser);
+      if (edit) history.push("/users");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -60,7 +59,7 @@ const UsersEdit: React.FC<ContainerProps> = ({ item }) => {
     }
   };
 
-  const remove = () => {
+  const remove = async () => {
     presentAlert({
       header: "Alert!",
       message: "¿Estás seguro de que deseas eliminar este usuario?",
@@ -72,10 +71,10 @@ const UsersEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.id;
-            removeDataUser(id);
-            history.push("/users");
+          handler: async () => {
+            let id_usuario = item.id_usuario;
+            let del = await removeUserData(id_usuario);
+            if (del) history.push("/users");
           },
         },
       ],
@@ -103,19 +102,6 @@ const UsersEdit: React.FC<ContainerProps> = ({ item }) => {
             <IonListHeader color={"warning"}>
               <IonLabel>Modificar o visualizar un usuario</IonLabel>
             </IonListHeader>
-            <IonRow>
-              <IonCol>
-                <IonItem>
-                  <IonLabel position="floating">Id Usuario</IonLabel>
-                  <IonInput
-                    onIonChange={(e) => (user.userId = e.detail.value!)}
-                    placeholder="Id Usuario"
-                    value={user.userId}
-                    required
-                  ></IonInput>
-                </IonItem>
-              </IonCol>
-            </IonRow>
             <IonRow>
               <IonCol>
                 <IonItem>

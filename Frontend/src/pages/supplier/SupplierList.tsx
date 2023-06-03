@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
@@ -20,26 +21,32 @@ import {
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
-import { reloadDataSuppliers, searchDataSuppliers } from "./SupplierApi";
-import { supplierFormat } from "./SupplierFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
-import SupplierAdd from "./SupplierAdd";
+import { searchSupplierData } from "./SupplierApi";
+import { supplierFormat } from "./SupplierFormat";
 import SupplierEdit from "./SupplierEdit";
+import SupplierAdd from "./SupplierAdd";
 
 const SupplierList: React.FC = () => {
   const [supplierData, setSupplierData] = useState<supplierFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     searchSuppliers();
   }, []);
 
-  const searchSuppliers = () => {
-    let list = searchDataSuppliers();
-    setSupplierData(list);
+  const searchSuppliers = async () => {
+    setShowLoading(true)
+    let list = await searchSupplierData();
+    setTimeout(() => {
+      setSupplierData(list);
+      setShowLoading(false);
+    }, 1000);
+
   };
 
   const reload = () => {
-    reloadDataSuppliers();
+    localStorage.removeItem("suppliers");
     searchSuppliers();
   };
 
@@ -63,6 +70,11 @@ const SupplierList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -87,11 +99,11 @@ const SupplierList: React.FC = () => {
               return (
                 <IonItem key={index}>
                   <IonThumbnail slot="start">
-                    <img alt={supplier.name} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+                    <img alt={supplier.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
                   </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{supplier.name}</IonCardTitle>
-                    <IonCardSubtitle>{supplier.address}</IonCardSubtitle>
+                    <IonCardTitle>{supplier.Nombre}</IonCardTitle>
+                    <IonCardSubtitle>{supplier.Direccion}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <SupplierEdit item={supplier} />}>
                     <IonButton shape="round" size="small" fill="outline">

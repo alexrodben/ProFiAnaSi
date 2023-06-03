@@ -26,14 +26,13 @@ import "./theme/variables.css";
 
 import Login from "./pages/login/Login";
 import ProductPage from "./pages/product/ProductPage";
-import ProductEdit from "./pages/product/ProductEdit";
 import SupplierPage from "./pages/supplier/SupplierPage";
 import CustomerPage from "./pages/customer/CustomerPage";
 import KardexPage from "./pages/kardex/KardexPage";
 import CategoryPage from "./pages/category/CategoryPage";
 import ComprasPage from "./pages/compras/ComprasPage";
 import VentasPage from "./pages/ventas/VentasPage";
-import UsersPage from "./pages/users/UsersPage";
+import UsersPage from "./pages/users/UserPage";
 
 
 setupIonicReact();
@@ -47,40 +46,40 @@ const App: React.FC = () => {
           <IonRouterOutlet id="main">
             {/* Redirect Routes */}
             <Route path="/page" exact>
-              <Redirect to="/page/home" />
+              <Redirect to="/home" />
             </Route>
             <Route path="/" exact>
               <Redirect to="/login" />
             </Route>
 
             {/* Default Routes */}
-            <Route path="/page/:name" exact component={Page} />
+            <Route path="/:name" exact component={Page} />
 
             {/* Products Routes */}
-            <Route path="/page/products" exact component={ProductPage} />
+            <Route path="/products" exact component={ProductPage} />
 
             {/* Customers Routes */}
-            <Route path="/page/customers" exact component={CustomerPage} />
+            <Route path="/customers" exact component={CustomerPage} />
 
             {/* Suppliers Routes */}
-            <Route path="/page/suppliers" exact component={SupplierPage} />
+            <Route path="/suppliers" exact component={SupplierPage} />
 
             {/* Kardex Routes */}
-            <Route path="/page/kardex" exact component={KardexPage} />
+            <Route path="/kardex" exact component={KardexPage} />
 
             {/* Category Routes */}
-            <Route path="/page/category" exact component={CategoryPage} />
+            <Route path="/categories" exact component={CategoryPage} />
 
             {/* Compras Routes */}
-            <Route path="/page/compras" exact component={ComprasPage} />
+            <Route path="/compras" exact component={ComprasPage} />
 
             {/* Ventas Routes */}
-            <Route path="/page/ventas" exact component={VentasPage} />
+            <Route path="/ventas" exact component={VentasPage} />
 
             {/* Usuarios Routes */}
-            <Route path="/page/users" exact component={UsersPage} />
+            <Route path="/users" exact component={UsersPage} />
 
-            <Route path={["/page/home", "/page/about", "/page/contact"]} exact component={Page} />
+            <Route path={["/home", "/about", "/contact"]} exact component={Page} />
           </IonRouterOutlet>
         </IonSplitPane>
         <Route path={"/login"} exact component={Login} />

@@ -19,7 +19,7 @@ import {
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
 import { customerFormat } from "./CustomerFormat";
-import { editDataCustomer, removeDataCustomer } from "./CustomerApi";
+import { editCustomerData, removeCustomerData } from "./CustomerApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
@@ -32,20 +32,21 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
-    if (customer.name && customer.address && customer.nit && customer.phone && customer.email && customer.registrationDate && customer.updateDate) {
+  const edit = async () => {
+    if (customer.Nombre && customer.Direccion && customer.Nit && customer.Telefono && customer.email && customer.CreatedAt && customer.UpdatedAt) {
       const newCustomer: customerFormat = {
-        id: Math.round(Math.random() * 10000).toString(),
-        name: customer.name,
-        address: customer.address,
-        nit: customer.nit,
-        phone: customer.phone,
-        email: customer.email,
-        registrationDate: customer.registrationDate,
-        updateDate: customer.updateDate,
+        Id_Cliente: customer.Id_Cliente,
+        Estatus: "true",
+        Nombre: customer.Nombre,
+        Direccion: customer.Direccion,
+        Nit: customer.Nit,
+        Telefono: customer.Telefono,
+        Email: customer.email,
+        CreatedAt: customer.CreatedAt,
+        UpdatedAt: customer.UpdatedAt,
       };
-      editDataCustomer(newCustomer);
-      history.push("customers");
+      let edit = await editCustomerData(newCustomer);
+      if (edit) history.push("/customers");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -56,7 +57,7 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
     }
   };
 
-  const remove = () => {
+  const remove = async () => {
     presentAlert({
       header: "Alert!",
       buttons: [
@@ -67,10 +68,10 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.id;
-            removeDataCustomer(id);
-            history.push("customers");
+          handler: async () => {
+            let Id_Cliente = item.Id_Cliente;
+            let del = await removeCustomerData(Id_Cliente);
+            if (del) history.push("/customers");
           },
         },
       ],
@@ -88,7 +89,7 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{customer.name}</IonTitle>
+          <IonTitle>{customer.Nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -103,9 +104,9 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Nombre</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (customer.name = e.detail.value)}
+                    onIonChange={(e) => (customer.Nombre = e.detail.value)}
                     placeholder="Nombre del cliente"
-                    value={customer.name}
+                    value={customer.Nombre}
                     required
                   ></IonInput>
                 </IonItem>
@@ -116,9 +117,9 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Dirección</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (customer.address = e.detail.value)}
+                    onIonChange={(e) => (customer.Direccion = e.detail.value)}
                     placeholder="Dirección del cliente"
-                    value={customer.address}
+                    value={customer.Direccion}
                     required
                   ></IonInput>
                 </IonItem>
@@ -129,9 +130,9 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">NIT</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (customer.nit = e.detail.value)}
+                    onIonChange={(e) => (customer.Nit = e.detail.value)}
                     placeholder="NIT del cliente"
-                    value={customer.nit}
+                    value={customer.Nit}
                     required
                   ></IonInput>
                 </IonItem>
@@ -142,8 +143,8 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Teléfono</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (customer.phone = e.detail.value)}
-                    value={customer.phone}
+                    onIonChange={(e) => (customer.Telefono = e.detail.value)}
+                    value={customer.Telefono}
                     placeholder="Teléfono del cliente"
                     required
                   ></IonInput>
@@ -168,8 +169,8 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Registro</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (customer.registrationDate = e.detail.value)}
-                    value={customer.registrationDate}
+                    onIonChange={(e) => (customer.CreatedAt = e.detail.value)}
+                    value={customer.CreatedAt}
                     placeholder="Fecha de Registro del cliente"
                     required
                     disabled
@@ -178,19 +179,19 @@ const CustomerEdit: React.FC<ContainerProps> = ({ item }) => {
               </IonCol>
             </IonRow>
             <IonRow>
-               <IonCol>
-                   <IonItem>
-                      <IonLabel position="floating">Fecha de Actualización</IonLabel>
-                       <IonInput
-                          onIonChange={(e) => (customer.updateDate = e.detail.value)}
-                             value={customer.updateDate} 
-                           placeholder="Fecha de Actualización del cliente"
-                         required
-                       disabled 
-                     ></IonInput>
-                    </IonItem>
-                </IonCol>
-              </IonRow>         
+              <IonCol>
+                <IonItem>
+                  <IonLabel position="floating">Fecha de Actualización</IonLabel>
+                  <IonInput
+                    onIonChange={(e) => (customer.UpdatedAt = e.detail.value)}
+                    value={customer.UpdatedAt}
+                    placeholder="Fecha de Actualización del cliente"
+                    required
+                    disabled
+                  ></IonInput>
+                </IonItem>
+              </IonCol>
+            </IonRow>
             <IonRow>
               <IonCol size="6">
                 <IonItem>

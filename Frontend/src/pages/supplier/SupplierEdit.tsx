@@ -19,7 +19,7 @@ import {
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
 import { supplierFormat } from "./SupplierFormat";
-import { editDataSupplier, removeDataSupplier } from "./SupplierApi";
+import { editSupplierData, removeSupplierData } from "./SupplierApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
@@ -32,19 +32,19 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
-    if (supplier.name && supplier.address && supplier.nit && supplier.phone && supplier.email) {
+  const edit = async () => {
+    if (supplier.Nombre && supplier.Direccion && supplier.Nit && supplier.Telefono && supplier.Email) {
       const newSupplier: supplierFormat = {
-        id: item.id,
-        name: supplier.name,
-        address: supplier.address,
-        nit: supplier.nit,
-        phone: supplier.phone,
-        email: supplier.email,
-        status: ""
+        Id_Proveedor: item.Id_Proveedor,
+        Nombre: supplier.Nombre,
+        Direccion: supplier.Direccion,
+        Nit: supplier.Nit,
+        Telefono: supplier.Telefono,
+        Email: supplier.Email,
+        Estatus: ""
       };
-      editDataSupplier(newSupplier);
-      history.push("suppliers");
+      let edit = await editSupplierData(newSupplier);
+      if (edit) history.push("/suppliers");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -55,7 +55,7 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
     }
   };
 
-  const remove = () => {
+  const remove = async () => {
     presentAlert({
       header: "Alert!",
       buttons: [
@@ -66,10 +66,10 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.id;
-            removeDataSupplier(id);
-            history.push("suppliers");
+          handler: async () => {
+            let Id_Proveedor = item.Id_Proveedor;
+            let del = await removeSupplierData(Id_Proveedor);
+            if (del) history.push("/suppliers");
           },
         },
       ],
@@ -87,7 +87,7 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{supplier.name}</IonTitle>
+          <IonTitle>{supplier.Nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -102,9 +102,9 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Nombre</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.name = e.detail.value)}
+                    onIonChange={(e) => (supplier.Nombre = e.detail.value)}
                     placeholder="Nombre del proveedor"
-                    value={supplier.name}
+                    value={supplier.Nombre}
                     required
                   ></IonInput>
                 </IonItem>
@@ -115,9 +115,9 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Dirección</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.address = e.detail.value)}
+                    onIonChange={(e) => (supplier.Direccion = e.detail.value)}
                     placeholder="Dirección del proveedor"
-                    value={supplier.address}
+                    value={supplier.Direccion}
                     required
                   ></IonInput>
                 </IonItem>
@@ -128,9 +128,9 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">NIT</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.nit = e.detail.value)}
+                    onIonChange={(e) => (supplier.Nit = e.detail.value)}
                     placeholder="NIT del proveedor"
-                    value={supplier.nit}
+                    value={supplier.Nit}
                     required
                   ></IonInput>
                 </IonItem>
@@ -141,8 +141,8 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Teléfono</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.phone = e.detail.value)}
-                    value={supplier.phone}
+                    onIonChange={(e) => (supplier.Telefono = e.detail.value)}
+                    value={supplier.Telefono}
                     placeholder="Teléfono del proveedor"
                     required
                   ></IonInput>
@@ -154,10 +154,38 @@ const SupplierEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Correo Electrónico</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.email = e.detail.value)}
-                    value={supplier.email}
+                    onIonChange={(e) => (supplier.Email = e.detail.value)}
+                    value={supplier.Email}
                     placeholder="Correo Electrónico del proveedor"
                     required
+                  ></IonInput>
+                </IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonLabel position="floating">Fecha de Registro</IonLabel>
+                  <IonInput
+                    onIonChange={(e) => (supplier.CreatedAt = e.detail.value)}
+                    value={supplier.CreatedAt}
+                    placeholder="Fecha de Registro del producto"
+                    required
+                    disabled
+                  ></IonInput>
+                </IonItem>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonItem>
+                  <IonLabel position="floating">Fecha de Actualización</IonLabel>
+                  <IonInput
+                    onIonChange={(e) => (supplier.UpdatedAt = e.detail.value)}
+                    value={supplier.UpdatedAt}
+                    placeholder="Fecha de Actualización del producto"
+                    required
+                    disabled
                   ></IonInput>
                 </IonItem>
               </IonCol>

@@ -12,20 +12,23 @@ import {
 
 import { useLocation } from "react-router-dom";
 import {
-  homeOutline,
   homeSharp,
-  cubeOutline,
+  homeOutline,
+  cardSharp,
+  cardOutline,
   cubeSharp,
-  receiptOutline,
-  receiptSharp,
-  documentAttachOutline,
-  documentAttachSharp,
-  newspaperOutline,
-  newspaperSharp,
-  personOutline,
+  cubeOutline,
   personSharp,
+  personOutline,
+  receiptSharp,
+  receiptOutline,
+  footstepsSharp,
+  footstepsOutline,
+  cog,
+  people,
+  clipboard,
+  documentAttach,
 } from "ionicons/icons";
-import { people, cog } from "ionicons/icons";
 import "./Menu.css";
 
 interface AppPage {
@@ -43,63 +46,61 @@ interface LabelPage {
 const appPages: AppPage[] = [
   {
     title: "Tablero",
-    url: "/page/home",
+    url: "/home",
     iosIcon: homeOutline,
     mdIcon: homeSharp,
   },
   {
     title: "Productos",
-    url: "/page/products",
+    url: "/products",
     iosIcon: cubeOutline,
     mdIcon: cubeSharp,
   },
   {
+    title: "Ventas",
+    url: "/ventas",
+    iosIcon: cardOutline,
+    mdIcon: cardSharp,
+  },
+  {
+    title: "Compras",
+    url: "/compras",
+    iosIcon: receiptOutline,
+    mdIcon: receiptSharp,
+  },
+  {
     title: "Clientes",
-    url: "/page/custuomers",
+    url: "/customers",
     iosIcon: personOutline,
     mdIcon: personSharp,
   },
   {
-    title: "Kardex",
-    url: "/page/kardex",
-    iosIcon: documentAttachOutline,
-    mdIcon: documentAttachSharp,
-  },
-  {
     title: "Proveedores",
-    url: "/page/suppliers",
-    iosIcon: newspaperOutline,
-    mdIcon: newspaperSharp,
-  },
-  {
-    title: "Categorías",
-    url: "/page/Category",
-    iosIcon: newspaperOutline,
-    mdIcon: newspaperSharp,
-  },
-  {
-    title: "Compras",
-    url: "/page/compras",
-    iosIcon: newspaperOutline,
-    mdIcon: newspaperSharp,
-  },
-  {
-    title: "Ventas",
-    url: "/page/ventas",
-    iosIcon: newspaperOutline,
-    mdIcon: newspaperSharp,
+    url: "/suppliers",
+    iosIcon: footstepsOutline,
+    mdIcon: footstepsSharp,
   },
 ];
 
 const labels: LabelPage[] = [
   {
+    title: "Kardex",
+    url: "/kardex",
+    icon: documentAttach,
+  },
+  {
+    title: "Categorías",
+    url: "/categories",
+    icon: clipboard,
+  },
+  {
     title: "Usuarios",
-    url: "/page/users",
+    url: "/users",
     icon: people,
   },
   {
     title: "Configuracion",
-    url: "/page/settings",
+    url: "/settings",
     icon: cog,
   },
 ];
@@ -132,8 +133,9 @@ const Menu: React.FC = () => {
         </IonList>
 
         <IonList id="labels-list">
-          <IonListHeader>Configuraciones</IonListHeader>
+          <IonListHeader>Complementos</IonListHeader>
           {labels.map((label, index) => {
+            let disabled = label.title === "Configuracion" ? true : false;
             return (
               <IonMenuToggle key={index} autoHide={false}>
                 <IonItem
@@ -141,6 +143,7 @@ const Menu: React.FC = () => {
                   detail={false}
                   routerDirection="none"
                   routerLink={label.url}
+                  disabled={disabled}
                   className={location.pathname === label.url ? "selected" : ""}
                 >
                   <IonIcon aria-hidden="true" slot="start" icon={label.icon} />

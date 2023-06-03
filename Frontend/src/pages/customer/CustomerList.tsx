@@ -12,6 +12,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
@@ -19,26 +20,31 @@ import {
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
-import { reloadDataCustomers, searchDataCustomers } from "./CustomerApi";
-import { customerFormat } from "./CustomerFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
-import CustomerAdd from "./CustomerAdd";
+import { searchCustomerData } from "./CustomerApi";
+import { customerFormat } from "./CustomerFormat";
 import CustomerEdit from "./CustomerEdit";
+import CustomerAdd from "./CustomerAdd";
 
 const CustomerList: React.FC = () => {
   const [customerData, setCustomerData] = useState<customerFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     searchCustomers();
   }, []);
 
-  const searchCustomers = () => {
-    let list = searchDataCustomers();
+  const searchCustomers = async () => {
+    let list = await searchCustomerData();
+    setShowLoading(true)
     setCustomerData(list);
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 1000);
   };
 
   const reload = () => {
-    reloadDataCustomers();
+    localStorage.removeItem("customers");
     searchCustomers();
   };
 
@@ -62,6 +68,11 @@ const CustomerList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -86,11 +97,11 @@ const CustomerList: React.FC = () => {
               return (
                 <IonItem key={index}>
                   <IonThumbnail slot="start">
-                    <img alt={customer.name} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+                    <img alt={customer.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
                   </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{customer.name}</IonCardTitle>
-                    <IonCardSubtitle>{customer.address}</IonCardSubtitle>
+                    <IonCardTitle>{customer.Nombre}</IonCardTitle>
+                    <IonCardSubtitle>{customer.Direccion}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <CustomerEdit item={customer} />}>
                     <IonButton shape="round" size="small" fill="outline">

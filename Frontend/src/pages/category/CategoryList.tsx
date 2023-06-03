@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
@@ -20,7 +21,7 @@ import {
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
-import { reloadDataCategories, searchDataCategories } from "./CategoryApi";
+import { searchCategoryData } from "./CategoryApi";
 import { categoryFormat } from "./CategoryFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
 import CategoryAdd from "./CategoryAdd";
@@ -28,18 +29,23 @@ import CategoryEdit from "./CategoryEdit";
 
 const CategoryList: React.FC = () => {
   const [categoryData, setCategoryData] = useState<categoryFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     searchCategories();
   }, []);
 
-  const searchCategories = () => {
-    let list = searchDataCategories();
+  const searchCategories = async () => {
+    setShowLoading(true)
+    let list = await searchCategoryData();
     setCategoryData(list);
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 1000);
   };
 
   const reload = () => {
-    reloadDataCategories();
+    localStorage.removeItem("categories");
     searchCategories();
   };
 
@@ -63,6 +69,11 @@ const CategoryList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -87,11 +98,11 @@ const CategoryList: React.FC = () => {
               return (
                 <IonItem key={index}>
                   <IonThumbnail slot="start">
-                    <img alt={category.name} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+                    <img alt={category.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
                   </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{category.name}</IonCardTitle>
-                    <IonCardSubtitle>{category.registrationDate}</IonCardSubtitle>
+                    <IonCardTitle>{category.Nombre}</IonCardTitle>
+                    <IonCardSubtitle>{category.CreatedAt}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <CategoryEdit item={category} />}>
                     <IonButton shape="round" size="small" fill="outline">

@@ -18,7 +18,7 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { saveDataCategory } from "./CategoryApi"; // Importa el método de API correspondiente para guardar la categoría
+import { saveCategoryData } from "./CategoryApi"; // Importa el método de API correspondiente para guardar la categoría
 import { useHistory } from "react-router";
 
 const CategoryAdd: React.FC = () => {
@@ -27,18 +27,18 @@ const CategoryAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
-    if (category.name && category.registrationDate && category.updateDate) {
+  const save = async () => {
+    if (category.Nombre && category.CreatedAt && category.UpdatedAt) {
       const newCategory = {
-        id: Math.round(Math.random() * 10000).toString(),
-        name: category.name,
-        registrationDate: category.registrationDate,
-        updateDate: category.updateDate,
+        Id_Categoria: Math.round(Math.random() * 10000).toString(),
+        Nombre: category.Nombre,
+        CreatedAt: category.CreatedAt,
+        UpdatedAt: category.UpdatedAt,
       };
-      let saved = saveDataCategory(newCategory);
+      let saved = await saveCategoryData(newCategory);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("categories");
       }
 
       // history.push("categories");
@@ -53,7 +53,7 @@ const CategoryAdd: React.FC = () => {
   };
 
   useEffect(() => {
-    setCategory({ id: "", name: "", registrationDate: "", updateDate: "" });
+    setCategory({ Id_Categoria: "", Nombre: "", CreatedAt: "", UpdatedAt: "" });
   }, []);
 
   return (
@@ -78,9 +78,9 @@ const CategoryAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Nombre Categoría</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.name = e.detail.value)}
+                    onIonChange={(e) => (category.Nombre = e.detail.value)}
                     placeholder="Nombre de la categoría"
-                    value={category.name}
+                    value={category.Nombre}
                     required
                   ></IonInput>
                 </IonItem>
@@ -91,9 +91,9 @@ const CategoryAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Registro</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.registrationDate = e.detail.value)}
+                    onIonChange={(e) => (category.CreatedAt = e.detail.value)}
                     placeholder="Fecha de registro"
-                    value={category.registrationDate}
+                    value={category.CreatedAt}
                     required
                   ></IonInput>
                 </IonItem>
@@ -104,9 +104,9 @@ const CategoryAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Actualización</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.updateDate = e.detail.value)}
+                    onIonChange={(e) => (category.UpdatedAt = e.detail.value)}
                     placeholder="Fecha de actualización"
-                    value={category.updateDate}
+                    value={category.UpdatedAt}
                     required
                   ></IonInput>
                 </IonItem>

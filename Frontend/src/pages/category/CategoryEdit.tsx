@@ -19,7 +19,7 @@ import {
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
 import { categoryFormat } from "./CategoryFormat";
-import { editDataCategory, removeDataCategory } from "./CategoryApi";
+import { editCategoryData, removeCategoryData } from "./CategoryApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
@@ -32,16 +32,16 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
-    if (category.name && category.registrationDate && category.updateDate) {
+  const edit = async () => {
+    if (category.Nombre && category.CreatedAt && category.UpdatedAt) {
       const newCategory: categoryFormat = {
-        id: item.id,
-        name: category.name,
-        registrationDate: category.registrationDate,
-        updateDate: category.updateDate,
+        Id_Categoria: item.Id_Categoria,
+        Nombre: category.Nombre,
+        CreatedAt: category.CreatedAt,
+        UpdatedAt: category.UpdatedAt,
       };
-      editDataCategory(newCategory);
-      history.push("categories");
+      let edit = await editCategoryData(newCategory);
+      if (edit) history.push("/categories");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -52,7 +52,7 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
     }
   };
 
-  const remove = () => {
+  const remove = async () => {
     presentAlert({
       header: "Alert!",
       buttons: [
@@ -63,10 +63,10 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.id;
-            removeDataCategory(id);
-            history.push("categories");
+          handler: async () => {
+            let Id_Categoria = item.Id_Categoria;
+            let del = await removeCategoryData(Id_Categoria);
+            if (del) history.push("/categories");
           },
         },
       ],
@@ -84,7 +84,7 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{category.name}</IonTitle>
+          <IonTitle>{category.Nombre}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -99,9 +99,9 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Nombre</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.name = e.detail.value)}
+                    onIonChange={(e) => (category.Nombre = e.detail.value)}
                     placeholder="Nombre de la categoría"
-                    value={category.name}
+                    value={category.Nombre}
                     required
                   ></IonInput>
                 </IonItem>
@@ -112,8 +112,8 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Registro</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.registrationDate = e.detail.value)}
-                    value={category.registrationDate}
+                    onIonChange={(e) => (category.CreatedAt = e.detail.value)}
+                    value={category.CreatedAt}
                     placeholder="Fecha de Registro de la categoría"
                     required
                     disabled
@@ -126,8 +126,8 @@ const CategoryEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha de Actualización</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (category.updateDate = e.detail.value)}
-                    value={category.updateDate}
+                    onIonChange={(e) => (category.UpdatedAt = e.detail.value)}
+                    value={category.UpdatedAt}
                     placeholder="Fecha de Actualización de la categoría"
                     required
                     disabled

@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
@@ -20,33 +21,37 @@ import {
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
-import { reloadProductData, searchProductData } from "./ProductApi";
-import { productFormat } from "./ProductFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
-import ProductAdd from "./ProductAdd";
+import { searchProductData } from "./ProductApi";
+import { productFormat } from "./ProductFormat";
 import ProductEdit from "./ProductEdit";
+import ProductAdd from "./ProductAdd";
 
 const ProductList: React.FC = () => {
   const [productData, setProductData] = useState<productFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     searchProducts();
   }, []);
 
-  const searchProducts = () => {
-    let list = searchProductData();
-    setProductData(list);
+  const searchProducts = async () => {
+    setShowLoading(true)
+    let list = await searchProductData();
+    setTimeout(() => {
+      setProductData(list);
+      setShowLoading(false);
+    }, 1000);
   };
 
-  const reload = () => {
-    reloadProductData();
-    searchProducts();
+  const reload = async () => {
+    localStorage.removeItem("products");
+    await searchProducts();
   };
 
   function handleRefresh(event: CustomEvent<RefresherEventDetail>) {
     setTimeout(() => {
       searchProducts();
-      // Any calls to load data go here
       event.detail.complete();
     }, 2000);
   }
@@ -63,6 +68,11 @@ const ProductList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -87,11 +97,11 @@ const ProductList: React.FC = () => {
               return (
                 <IonItem key={index}>
                   <IonThumbnail slot="start">
-                    <img alt={product.name} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+                    <img alt={product.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
                   </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{product.name}</IonCardTitle>
-                    <IonCardSubtitle>{product.sku}</IonCardSubtitle>
+                    <IonCardTitle>{product.Nombre}</IonCardTitle>
+                    <IonCardSubtitle>{product.SKU}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <ProductEdit item={product} />}>
                     <IonButton shape="round" size="small" fill="outline">

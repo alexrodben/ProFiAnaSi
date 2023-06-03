@@ -20,6 +20,7 @@ import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/
 import { checkmark, close } from "ionicons/icons";
 import { saveProductData } from "./ProductApi";
 import { useHistory } from "react-router";
+import { productFormat } from "./ProductFormat";
 
 const ProductAdd: React.FC = () => {
   const [product, setProduct] = useState<any>({});
@@ -27,7 +28,7 @@ const ProductAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
+  const save = async () => {
     if (
       product.name &&
       product.sku &&
@@ -37,28 +38,25 @@ const ProductAdd: React.FC = () => {
       product.maxStock &&
       product.stock &&
       product.image &&
-      product.unitPrice &&
-      product.registrationDate &&
-      product.updateDate
+      product.unitPrice
     ) {
-      const newProduct = {
-        id: Math.round(Math.random() * 10000).toString(),
-        name: product.name,
-        sku: product.sku,
-        status: product.status,
-        description: product.description,
-        minStock: product.minStock,
-        maxStock: product.maxStock,
-        stock: product.stock,
-        image: product.image,
-        unitPrice: product.unitPrice,
-        registrationDate: product.registrationDate,
-        updateDate: product.updateDate,
+      const newProduct: productFormat = {
+        Id_Producto: Math.round(Math.random() * 10).toString(),
+        Id_Categoria: Math.round(Math.random() * 10).toString(),
+        Nombre: product.name,
+        SKU: product.sku,
+        Estado: product.status,
+        Descripcion: product.description,
+        Existencia_minima: product.minStock,
+        Existencia_maxima: product.maxStock,
+        Stock: product.stock,
+        Imagen: product.image,
+        Valor_Unitario: product.unitPrice,
       };
-      let saved = saveProductData(product);
+      let saved = await saveProductData(newProduct);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("/products");
       }
     } else {
       present({
@@ -82,8 +80,6 @@ const ProductAdd: React.FC = () => {
       stock: "",
       image: "",
       unitPrice: "",
-      registrationDate: "",
-      updateDate: "",
     });
   }, []);
 
@@ -221,33 +217,6 @@ const ProductAdd: React.FC = () => {
                 </IonItem>
               </IonCol>
             </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItem>
-                  <IonLabel position="floating">Fecha de Registro</IonLabel>
-                  <IonInput
-                    onIonChange={(e) => (product.registrationDate = e.detail.value)}
-                    placeholder="Fecha de Registro"
-                    value={product.registrationDate}
-                    required
-                  ></IonInput>
-                </IonItem>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonItem>
-                  <IonLabel position="floating">Fecha de Actualización</IonLabel>
-                  <IonInput
-                    onIonChange={(e) => (product.updateDate = e.detail.value)}
-                    placeholder="Fecha de Actualización"
-                    value={product.updateDate}
-                    required
-                  ></IonInput>
-                </IonItem>
-              </IonCol>
-            </IonRow>
-
             <IonRow>
               <IonCol>
                 <IonItem>

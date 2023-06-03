@@ -18,7 +18,7 @@ import {
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
 import { customerFormat } from "./CustomerFormat";
-import { saveDataCustomer } from "./CustomerApi";
+import { saveCustomerData } from "./CustomerApi";
 import { useHistory } from "react-router";
 
 const CustomerAdd: React.FC = () => {
@@ -27,25 +27,22 @@ const CustomerAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
-    if (customer.name && customer.address && customer.nit && customer.phone && customer.email && customer.registrationDate && customer.updateDate) {
+  const save = async () => {
+    if (customer.name && customer.address && customer.nit && customer.phone && customer.email) {
       const newCustomer: customerFormat = {
-        id: Math.round(Math.random() * 10000).toString(),
-        name: customer.name,
-        address: customer.address,
-        nit: customer.nit,
-        phone: customer.phone,
-        email: customer.email,
-        registrationDate: customer.registrationDate,
-        updateDate: customer.updateDate,
+        Id_Cliente: Math.round(Math.random() * 10).toString(),
+        Estatus: "true",
+        Nombre: customer.name,
+        Direccion: customer.address,
+        Nit: customer.nit,
+        Telefono: customer.phone,
+        Email: customer.email,
       };
-      let saved = saveDataCustomer(newCustomer);
+      let saved = await saveCustomerData(newCustomer);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("/customers");
       }
-
-      //history.push("customers");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -57,7 +54,7 @@ const CustomerAdd: React.FC = () => {
   };
 
   useEffect(() => {
-    setCustomer({ id: "", name: "", address: "", nit: "", phone: "", email: "", registrationDate: "", updateDate: "" });
+    setCustomer({ id: "", name: "", address: "", nit: "", phone: "", email: "" });
   }, []);
 
   return (
@@ -142,7 +139,7 @@ const CustomerAdd: React.FC = () => {
                 </IonItem>
               </IonCol>
             </IonRow>
-            
+
             <IonRow>
               <IonCol>
                 <IonItem>

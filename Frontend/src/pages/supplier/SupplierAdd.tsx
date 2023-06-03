@@ -19,7 +19,7 @@ import {
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
 import { supplierFormat } from "./SupplierFormat";
-import { saveDataSupplier } from "./SupplierApi";
+import { saveSupplierData } from "./SupplierApi";
 import { useHistory } from "react-router";
 
 const SupplierAdd: React.FC = () => {
@@ -28,21 +28,21 @@ const SupplierAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
-    if (supplier.status && supplier.name && supplier.address && supplier.nit && supplier.phone && supplier.email) {
+  const save = async () => {
+    if (supplier.Estatus && supplier.Nombre && supplier.Direccion && supplier.Nit && supplier.Telefono && supplier.Email) {
       const newSupplier: supplierFormat = {
-        id: Math.round(Math.random() * 10000).toString(),
-        status: supplier.status,
-        name: supplier.name,
-        address: supplier.address,
-        nit: supplier.nit,
-        phone: supplier.phone,
-        email: supplier.email,
+        Id_Proveedor: Math.round(Math.random() * 10000).toString(),
+        Estatus: supplier.Estatus,
+        Nombre: supplier.Nombre,
+        Direccion: supplier.Direccion,
+        Nit: supplier.Nit,
+        Telefono: supplier.Telefono,
+        Email: supplier.Email,
       };
-      let saved = saveDataSupplier(newSupplier);
+      let saved = await saveSupplierData(newSupplier);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("/suppliers");
       }
     } else {
       present({
@@ -55,7 +55,7 @@ const SupplierAdd: React.FC = () => {
   };
 
   useEffect(() => {
-    setSupplier({ id: "", status: "", name: "", address: "", nit: "", phone: "", email: "" });
+    setSupplier({ Id_Proveedor: "", Estatus: "", Nombre: "", Direccion: "", Nit: "", Telefono: "", Email: "" });
   }, []);
 
   return (
@@ -80,9 +80,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Estatus</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.status = e.detail.value)}
+                    onIonChange={(e) => (supplier.Estatus = e.detail.value)}
                     placeholder="Estatus del proveedor"
-                    value={supplier.status}
+                    value={supplier.Estatus}
                     required
                   ></IonInput>
                 </IonItem>
@@ -93,9 +93,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Nombre</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.name = e.detail.value)}
+                    onIonChange={(e) => (supplier.Nombre = e.detail.value)}
                     placeholder="Nombre del proveedor"
-                    value={supplier.name}
+                    value={supplier.Nombre}
                     required
                   ></IonInput>
                 </IonItem>
@@ -106,9 +106,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Dirección</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.address = e.detail.value)}
+                    onIonChange={(e) => (supplier.Direccion = e.detail.value)}
                     placeholder="Dirección del proveedor"
-                    value={supplier.address}
+                    value={supplier.Direccion}
                     required
                   ></IonInput>
                 </IonItem>
@@ -119,9 +119,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">NIT</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.nit = e.detail.value)}
+                    onIonChange={(e) => (supplier.Nit = e.detail.value)}
                     placeholder="NIT del proveedor"
-                    value={supplier.nit}
+                    value={supplier.Nit}
                     required
                   ></IonInput>
                 </IonItem>
@@ -132,9 +132,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Teléfono</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.phone = e.detail.value)}
+                    onIonChange={(e) => (supplier.Telefono = e.detail.value)}
                     placeholder="Teléfono del proveedor"
-                    value={supplier.phone}
+                    value={supplier.Telefono}
                     required
                   ></IonInput>
                 </IonItem>
@@ -145,9 +145,9 @@ const SupplierAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Correo Electrónico</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (supplier.email = e.detail.value)}
+                    onIonChange={(e) => (supplier.Email = e.detail.value)}
                     placeholder="Correo Electrónico del proveedor"
-                    value={supplier.email}
+                    value={supplier.Email}
                     required
                   ></IonInput>
                 </IonItem>
