@@ -16,7 +16,6 @@ import {
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
@@ -86,15 +85,9 @@ const KardexList: React.FC = () => {
             {kardexData.map((kardex, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img
-                      alt={kardex.id}
-                      src="https://ionicframework.com/docs/img/demos/thumbnail.svg"
-                    />
-                  </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{kardex.id}</IonCardTitle>
-                    <IonCardSubtitle>{kardex.detalle}</IonCardSubtitle>
+                    <IonCardTitle>{kardex.fecha} - {kardex.detalle}</IonCardTitle>
+                    <IonCardSubtitle>{kardex.detalle}, Valor: {kardex.cantidad}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink
                     slot="end"

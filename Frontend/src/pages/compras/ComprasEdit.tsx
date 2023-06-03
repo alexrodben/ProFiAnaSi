@@ -18,12 +18,12 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { compraFormat } from "./ComprasFormat";
-import { editDataCompra, removeDataCompra } from "./ComprasApi";
+import { comprasFormat } from "./ComprasFormat";
+import { editCompraData, removeCompraData } from "./ComprasApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
-  item: compraFormat;
+  item: comprasFormat;
 }
 
 const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
@@ -32,28 +32,25 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
   const [presentAlert] = useIonAlert();
   const history = useHistory();
 
-  const edit = () => {
+  const edit = async () => {
     if (
-      compra.fecha &&
-      compra.detalle &&
-      compra.tipoTransaccion &&
-      compra.cantidad &&
+      compra.Fecha &&
+      compra.Id_Proveedor &&
+      compra.CreatedAt &&
+      compra.UpdatedAt &&
       compra.valorUnitario &&
       compra.valorTotal &&
       compra.stock
     ) {
-      const newCompra: compraFormat = {
-        idCompra: Math.round(Math.random() * 10000).toString(),
-        fecha: compra.fecha,
-        detalle: compra.detalle,
-        tipoTransaccion: compra.tipoTransaccion,
-        cantidad: compra.cantidad,
-        valorUnitario: compra.valorUnitario,
-        valorTotal: compra.valorTotal,
-        stock: compra.stock,
+      const newCompra: comprasFormat = {
+        Id_Compra: Math.round(Math.random() * 10000).toString(),
+        Fecha: compra.Fecha,
+        Id_Proveedor: compra.Id_Proveedor,
+        CreatedAt: compra.CreatedAt,
+        UpdatedAt: compra.UpdatedAt,
       };
-      editDataCompra(newCompra);
-      history.push("compras");
+      let edit = await editCompraData(newCompra);
+      if (edit) history.push("compras");
     } else {
       present({
         message: "No has llenado todos los datos",
@@ -64,7 +61,7 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
     }
   };
 
-  const remove = () => {
+  const remove = async () => {
     presentAlert({
       header: "Alert!",
       buttons: [
@@ -75,10 +72,10 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
         {
           text: "Eliminar",
           role: "confirm",
-          handler: () => {
-            let id = item.idCompra;
-            removeDataCompra(id);
-            history.push("compras");
+          handler: async () => {
+            let id = item.Id_Compra;
+            let del = await removeCompraData(id);
+            if (del) history.push("compras");
           },
         },
       ],
@@ -96,7 +93,7 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{compra.detalle}</IonTitle>
+          <IonTitle>{compra.Id_Proveedor}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -111,9 +108,9 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (compra.fecha = e.detail.value)}
+                    onIonChange={(e) => (compra.Fecha = e.detail.value)}
                     placeholder="Fecha de la compra"
-                    value={compra.fecha}
+                    value={compra.Fecha}
                     required
                   ></IonInput>
                 </IonItem>
@@ -124,9 +121,9 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Detalle</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (compra.detalle = e.detail.value)}
+                    onIonChange={(e) => (compra.Id_Proveedor = e.detail.value)}
                     placeholder="Detalle de la compra"
-                    value={compra.detalle}
+                    value={compra.Id_Proveedor}
                     required
                   ></IonInput>
                 </IonItem>
@@ -137,9 +134,9 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Tipo de Transacción</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (compra.tipoTransaccion = e.detail.value)}
+                    onIonChange={(e) => (compra.CreatedAt = e.detail.value)}
                     placeholder="Tipo de transacción de la compra"
-                    value={compra.tipoTransaccion}
+                    value={compra.CreatedAt}
                     required
                   ></IonInput>
                 </IonItem>
@@ -150,8 +147,8 @@ const ComprasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Cantidad</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (compra.cantidad = e.detail.value)}
-                    value={compra.cantidad}
+                    onIonChange={(e) => (compra.UpdatedAt = e.detail.value)}
+                    value={compra.UpdatedAt}
                     placeholder="Cantidad de la compra"
                     required
                   ></IonInput>

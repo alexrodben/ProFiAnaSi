@@ -13,35 +13,40 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton } from "@ionic/react";
-import { reloadDataCompra, searchDataCompra } from "./ComprasApi";
-import { compraFormat } from "./ComprasFormat";
+import { searchComprasData } from "./ComprasApi";
+import { comprasFormat } from "./ComprasFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
 import ComprasAdd from "./ComprasAdd";
 import ComprasEdit from "./ComprasEdit";
 
 const ComprasList: React.FC = () => {
-  const [comprasData, setComprasData] = useState<compraFormat[]>([]);
+  const [comprasData, setComprasData] = useState<comprasFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useIonViewWillEnter(() => {
     searchCompras();
   });
 
-  const searchCompras = () => {
-    let list = searchDataCompra();
+  const searchCompras = async () => {
+    setShowLoading(true);
+    let list = await searchComprasData();
     setComprasData(list);
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 1000);
   };
 
   const reload = () => {
-    reloadDataCompra();
+    localStorage.removeItem("compras");
     searchCompras();
   };
 
@@ -64,6 +69,11 @@ const ComprasList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -87,12 +97,9 @@ const ComprasList: React.FC = () => {
             {comprasData.map((compra, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img alt={compra.idCompra} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                  </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{compra.idCompra}</IonCardTitle>
-                    <IonCardSubtitle>{compra.detalle}</IonCardSubtitle>
+                    <IonCardTitle>{compra.Id_Proveedor}</IonCardTitle>
+                    <IonCardSubtitle>{compra.Fecha}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <ComprasEdit item={compra} />}>
                     <IonButton shape="round" size="small" fill="outline">

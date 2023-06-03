@@ -17,7 +17,6 @@ import {
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
@@ -98,9 +97,6 @@ const SupplierList: React.FC = () => {
             {supplierData.map((supplier, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img alt={supplier.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                  </IonThumbnail>
                   <IonCardHeader>
                     <IonCardTitle>{supplier.Nombre}</IonCardTitle>
                     <IonCardSubtitle>{supplier.Direccion}</IonCardSubtitle>

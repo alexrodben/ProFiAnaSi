@@ -1,35 +1,88 @@
-import { ventaFormat, prueba } from "./VentasFormat";
+import axios from 'axios';
+import { ventasFormat } from './VentasFormat';
+import { URL } from "../../config";
 
-export function searchDataVenta() {
-  if (!localStorage["venta"]) {
-    localStorage["venta"] = JSON.stringify(prueba);
+// GET
+export async function searchVentasData(): Promise<ventasFormat[]> {
+  if (!localStorage["ventas"]) {
+    try {
+      const response = await axios.get(URL + "ventas", {
+        headers: {
+          Authorization: localStorage["token"]
+        }
+      });
+      localStorage["ventas"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener las ventas:', error);
+      }
+    }
+    return [];
   }
-  let ventas = localStorage["venta"];
-  ventas = JSON.parse(ventas);
+  let ventas: ventasFormat[] = JSON.parse(localStorage["ventas"]);
   return ventas;
 }
 
-export function removeDataVenta(remove: string) {
-  let ventas = searchDataVenta();
-  ventas = ventas.filter((item: ventaFormat) => item.idVenta !== remove);
-  localStorage["venta"] = JSON.stringify(ventas);
+// DELETE
+export async function removeVentaData(remove: string): Promise<boolean> {
+  try {
+    await axios.delete(URL + "ventas/" + remove, {
+      headers: {
+        Authorization: localStorage["token"]
+      }
+    });
+    let ventas: ventasFormat[] = await searchVentasData();
+    ventas = ventas.filter((venta: ventasFormat) => venta.Id_Venta !== remove);
+    localStorage["ventas"] = JSON.stringify(ventas);
+    return true;
+  } catch (error) {
+    console.error('Error al eliminar la venta:', error);
+    return false;
+  }
 }
 
-export function editDataVenta(edit: ventaFormat) {
-  let ventas = searchDataVenta();
-  ventas = ventas.filter((item: ventaFormat) => item.idVenta !== edit.idVenta);
-  ventas.push(edit);
-  localStorage["venta"] = JSON.stringify(ventas);
+// PUT
+export async function editVentaData(edit: ventasFormat): Promise<boolean> {
+  try {
+    await axios.put(URL + "ventas/" + edit.Id_Venta, edit, {
+      headers: {
+        Authorization: localStorage["token"]
+      }
+    });
+    let ventas: ventasFormat[] = await searchVentasData();
+    ventas = ventas.map((venta: ventasFormat) => {
+      if (venta.Id_Venta === edit.Id_Venta) {
+        return edit;
+      }
+      return venta;
+    });
+    localStorage["ventas"] = JSON.stringify(ventas);
+    return true;
+  } catch (error) {
+    console.error('Error al editar la venta:', error);
+    return false;
+  }
 }
 
-export function saveDataVenta(venta: ventaFormat) {
-  let ventaList = searchDataVenta();
-  ventaList.push(venta);
-  localStorage["venta"] = JSON.stringify(ventaList);
-  return true;
-}
-
-export function reloadDataVenta() {
-  localStorage.removeItem("venta");
-  return searchDataVenta();
+// POST
+export async function saveVentaData(venta: ventasFormat): Promise<boolean> {
+  try {
+    await axios.post(URL + "ventas", venta, {
+      headers: {
+        Authorization: localStorage["token"]
+      }
+    });
+    let ventas: ventasFormat[] = await searchVentasData();
+    ventas.push(venta);
+    localStorage["ventas"] = JSON.stringify(ventas);
+    return true;
+  } catch (error) {
+    console.error('Error al guardar la venta:', error);
+    return false;
+  }
 }

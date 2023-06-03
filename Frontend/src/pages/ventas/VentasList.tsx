@@ -13,35 +13,40 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
+  IonLoading,
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton } from "@ionic/react";
-import { reloadDataVenta, searchDataVenta } from "./VentasApi";
-import { ventaFormat } from "./VentasFormat";
 import { add, chevronForward, cloudDownload } from "ionicons/icons";
-import VentasAdd from "./VentasAdd";
+import { searchVentasData } from "./VentasApi";
+import { ventasFormat } from "./VentasFormat";
 import VentasEdit from "./VentasEdit";
+import VentasAdd from "./VentasAdd";
 
 const VentasList: React.FC = () => {
-  const [ventasData, setVentasData] = useState<ventaFormat[]>([]);
+  const [ventasData, setVentasData] = useState<ventasFormat[]>([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   useIonViewWillEnter(() => {
     searchVentas();
   });
 
-  const searchVentas = () => {
-    let list = searchDataVenta();
+  const searchVentas = async () => {
+    setShowLoading(true);
+    let list = await searchVentasData();
     setVentasData(list);
+    setTimeout(() => {
+      setShowLoading(false);
+    }, 1000);
   };
 
   const reload = () => {
-    reloadDataVenta();
+    localStorage.removeItem("ventas");
     searchVentas();
   };
 
@@ -64,6 +69,11 @@ const VentasList: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IonLoading
+          isOpen={showLoading}
+          onDidDismiss={() => setShowLoading(false)}
+          message={'Cargando datos. Espere por favor...'}
+        />
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
@@ -87,12 +97,9 @@ const VentasList: React.FC = () => {
             {ventasData.map((venta, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img alt={venta.idVenta} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                  </IonThumbnail>
                   <IonCardHeader>
-                    <IonCardTitle>{venta.idVenta}</IonCardTitle>
-                    <IonCardSubtitle>{venta.detalle}</IonCardSubtitle>
+                    <IonCardTitle>{venta.Id_Cliente} {venta.CreatedAt}</IonCardTitle>
+                    <IonCardSubtitle>{venta.Fecha}</IonCardSubtitle>
                   </IonCardHeader>
                   <IonNavLink slot="end" routerDirection="forward" component={() => <VentasEdit item={venta} />}>
                     <IonButton shape="round" size="small" fill="outline">

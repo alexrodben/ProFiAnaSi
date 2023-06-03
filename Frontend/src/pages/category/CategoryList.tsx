@@ -17,7 +17,6 @@ import {
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
@@ -36,7 +35,7 @@ const CategoryList: React.FC = () => {
   }, []);
 
   const searchCategories = async () => {
-    setShowLoading(true)
+    setShowLoading(true);
     let list = await searchCategoryData();
     setCategoryData(list);
     setTimeout(() => {
@@ -52,7 +51,6 @@ const CategoryList: React.FC = () => {
   function handleRefresh(event: CustomEvent<RefresherEventDetail>) {
     setTimeout(() => {
       searchCategories();
-      // Any calls to load data go here
       event.detail.complete();
     }, 2000);
   }
@@ -97,9 +95,6 @@ const CategoryList: React.FC = () => {
             {categoryData.map((category, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img alt={category.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                  </IonThumbnail>
                   <IonCardHeader>
                     <IonCardTitle>{category.Nombre}</IonCardTitle>
                     <IonCardSubtitle>{category.CreatedAt}</IonCardSubtitle>

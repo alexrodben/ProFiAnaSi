@@ -18,12 +18,12 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, useIonAlert } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { ventaFormat } from "./VentasFormat";
-import { editDataVenta, removeDataVenta } from "./VentasApi";
+import { ventasFormat } from "./VentasFormat";
+import { editVentaData, removeVentaData } from "./VentasApi";
 import { useHistory } from "react-router";
 
 interface ContainerProps {
-  item: ventaFormat;
+  item: ventasFormat;
 }
 
 const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
@@ -34,25 +34,19 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
 
   const edit = () => {
     if (
-      venta.fecha &&
-      venta.detalle &&
-      venta.tipoTransaccion &&
-      venta.cantidad &&
-      venta.valorUnitario &&
-      venta.valorTotal &&
-      venta.stock
+      venta.Id_Cliente &&
+      venta.Fecha &&
+      venta.CreatedAt &&
+      venta.UpdatedAt
     ) {
-      const newVenta: ventaFormat = {
-        idVenta: Math.round(Math.random() * 10000).toString(),
-        fecha: venta.fecha,
-        detalle: venta.detalle,
-        tipoTransaccion: venta.tipoTransaccion,
-        cantidad: venta.cantidad,
-        valorUnitario: venta.valorUnitario,
-        valorTotal: venta.valorTotal,
-        stock: venta.stock,
+      const newVenta: ventasFormat = {
+        Id_Venta: Math.round(Math.random() * 10000).toString(),
+        Id_Cliente: venta.Id_Cliente,
+        Fecha: venta.Fecha,
+        CreatedAt: venta.CreatedAt,
+        UpdatedAt: venta.UpdatedAt,
       };
-      editDataVenta(newVenta);
+      editVentaData(newVenta);
       history.push("ventas");
     } else {
       present({
@@ -76,8 +70,8 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
           text: "Eliminar",
           role: "confirm",
           handler: () => {
-            let id = item.idVenta;
-            removeDataVenta(id);
+            let id = item.Id_Venta;
+            removeVentaData(id);
             history.push("ventas");
           },
         },
@@ -96,7 +90,7 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
           <IonButtons slot="start">
             <IonBackButton></IonBackButton>
           </IonButtons>
-          <IonTitle>{venta.detalle}</IonTitle>
+          <IonTitle>{venta.Fecha}</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -111,9 +105,9 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Fecha</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (venta.fecha = e.detail.value)}
+                    onIonChange={(e) => (venta.Id_Cliente = e.detail.value)}
                     placeholder="Fecha de la venta"
-                    value={venta.fecha}
+                    value={venta.Id_Cliente}
                     required
                   ></IonInput>
                 </IonItem>
@@ -124,9 +118,9 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Detalle</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (venta.detalle = e.detail.value)}
+                    onIonChange={(e) => (venta.Fecha = e.detail.value)}
                     placeholder="Detalle de la venta"
-                    value={venta.detalle}
+                    value={venta.Fecha}
                     required
                   ></IonInput>
                 </IonItem>
@@ -137,9 +131,10 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Tipo de Transacción</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (venta.tipoTransaccion = e.detail.value)}
+                    onIonChange={(e) => (venta.CreatedAt = e.detail.value)}
                     placeholder="Tipo de transacción de la venta"
-                    value={venta.tipoTransaccion}
+                    value={venta.CreatedAt}
+                    disabled
                     required
                   ></IonInput>
                 </IonItem>
@@ -150,9 +145,10 @@ const VentasEdit: React.FC<ContainerProps> = ({ item }) => {
                 <IonItem>
                   <IonLabel position="floating">Cantidad</IonLabel>
                   <IonInput
-                    onIonChange={(e) => (venta.cantidad = e.detail.value)}
-                    value={venta.cantidad}
+                    onIonChange={(e) => (venta.UpdatedAt = e.detail.value)}
+                    value={venta.UpdatedAt}
                     placeholder="Cantidad de la venta"
+                    disabled
                     required
                   ></IonInput>
                 </IonItem>

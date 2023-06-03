@@ -1,33 +1,7 @@
-export interface ventaFormat {
-  idVenta: string;
-  fecha: string;
-  detalle: string;
-  tipoTransaccion: string;
-  cantidad: string;
-  valorUnitario: string;
-  valorTotal: string;
-  stock: string;
+export interface ventasFormat {
+  Id_Venta: string;
+  Id_Cliente: string;
+  Fecha: string;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
-
-export const prueba: ventaFormat[] = [
-  {
-    idVenta: "1",
-    fecha: "2021-01-01",
-    detalle: "Detalle 1",
-    tipoTransaccion: "Tipo 1",
-    cantidad: "10",
-    valorUnitario: "50",
-    valorTotal: "500",
-    stock: "100",
-  },
-  {
-    idVenta: "2",
-    fecha: "2021-01-02",
-    detalle: "Detalle 2",
-    tipoTransaccion: "Tipo 2",
-    cantidad: "20",
-    valorUnitario: "30",
-    valorTotal: "600",
-    stock: "80",
-  },
-];

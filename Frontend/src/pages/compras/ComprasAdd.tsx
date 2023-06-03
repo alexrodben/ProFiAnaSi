@@ -18,8 +18,9 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { saveDataCompra } from "./ComprasApi";
+import { saveCompraData } from "./ComprasApi";
 import { useHistory } from "react-router";
+import { comprasFormat } from "./ComprasFormat";
 
 const ComprasAdd: React.FC = () => {
   const [compra, setCompra] = useState<any>({});
@@ -27,31 +28,23 @@ const ComprasAdd: React.FC = () => {
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
+  const save = async () => {
     if (
-      compra.idCompra &&
-      compra.producto &&
-      compra.cantidad &&
-      compra.valorUnitario &&
-      compra.valorCosto &&
-      compra.valorTotal
+      compra.Id_Compra &&
+      compra.Id_Proveedor &&
+      compra.Fecha
     ) {
-      const newCompra = {
-        idCompra: Math.round(Math.random() * 10000).toString(),
-        producto: compra.producto,
-        cantidad: compra.cantidad,
-        valorUnitario: compra.valorUnitario,
-        valorCosto: compra.valorCosto,
-        valorTotal: compra.valorTotal,
-        fecha: "", // Agrega la propiedad "fecha" al objeto newCompra
-        detalle: "", // Agrega la propiedad "detalle" al objeto newCompra
-        tipoTransaccion: "", // Agrega la propiedad "tipoTransaccion" al objeto newCompra
-        stock: "", // Agrega la propiedad "stock" al objeto newCompra
+      const newCompra: comprasFormat = {
+        Id_Compra: Math.round(Math.random() * 10000).toString(),
+        Id_Proveedor: compra.producto,
+        Fecha: compra.cantidad,
+        CreatedAt: "",
+        UpdatedAt: ""
       };
-      let saved = saveDataCompra(newCompra);
+      let saved = await saveCompraData(newCompra);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("compras");
       }
     } else {
       present({

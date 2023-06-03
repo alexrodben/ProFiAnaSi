@@ -45,9 +45,6 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             {/* Redirect Routes */}
-            <Route path="/home" exact>
-              <Redirect to="/products" />
-            </Route>
             <Route path="/" exact>
               <Redirect to="/login" />
             </Route>

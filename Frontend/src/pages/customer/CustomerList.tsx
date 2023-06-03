@@ -16,7 +16,6 @@ import {
   IonNavLink,
   IonRefresher,
   IonRefresherContent,
-  IonThumbnail,
   RefresherEventDetail,
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from "@ionic/react";
@@ -96,9 +95,6 @@ const CustomerList: React.FC = () => {
             {customerData.map((customer, index) => {
               return (
                 <IonItem key={index}>
-                  <IonThumbnail slot="start">
-                    <img alt={customer.Nombre} src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                  </IonThumbnail>
                   <IonCardHeader>
                     <IonCardTitle>{customer.Nombre}</IonCardTitle>
                     <IonCardSubtitle>{customer.Direccion}</IonCardSubtitle>

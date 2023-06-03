@@ -18,60 +18,33 @@ import {
 } from "@ionic/react";
 import { IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { checkmark, close } from "ionicons/icons";
-import { saveDataVenta } from "./VentasApi";
+import { saveVentaData } from "./VentasApi";
 import { useHistory } from "react-router";
-
-export interface ventaFormat {
-  idVenta: string;
-  producto: string;
-  cantidad: string;
-  valorUnitario: string;
-  fecha: string;
-  detalle: string;
-  tipoTransaccion: string;
-  valorTotal: string;
-  stock: string;
-}
+import { ventasFormat } from "./VentasFormat";
 
 const VentasAdd: React.FC = () => {
-  const [venta, setVenta] = useState<ventaFormat>({
-    idVenta: "",
-    producto: "",
-    cantidad: "",
-    valorUnitario: "",
-    fecha: "",
-    detalle: "",
-    tipoTransaccion: "",
-    valorTotal: "",
-    stock: "",
-  });
+  const [venta, setVenta] = useState<any>();
   const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
   const [present] = useIonToast();
   const history = useHistory();
 
-  const save = () => {
+  const save = async () => {
     if (
-      venta.idVenta &&
-      venta.producto &&
-      venta.cantidad &&
-      venta.valorUnitario &&
-      venta.fecha
+      venta.Id_Venta &&
+      venta.Id_Cliente &&
+      venta.Fecha
     ) {
-      const newVenta: ventaFormat = {
-        idVenta: Math.round(Math.random() * 10000).toString(),
-        producto: venta.producto,
-        cantidad: venta.cantidad,
-        valorUnitario: venta.valorUnitario,
-        fecha: venta.fecha,
-        detalle: "",
-        tipoTransaccion: "",
-        valorTotal: "",
-        stock: "",
+      const newVenta: ventasFormat = {
+        Id_Venta: Math.round(Math.random() * 10000).toString(),
+        Id_Cliente: venta.Id_Cliente,
+        Fecha: venta.Fecha,
+        CreatedAt: "",
+        UpdatedAt: "",
       };
-      let saved = saveDataVenta(newVenta);
+      let saved = await saveVentaData(newVenta);
       if (saved && saveDisabled === true) {
         setSaveDisabled(false);
-        history.goBack();
+        history.push("ventas");
       }
     } else {
       present({
@@ -85,9 +58,9 @@ const VentasAdd: React.FC = () => {
 
   useEffect(() => {
     setVenta({
-      idVenta: "",
-      producto: "",
-      cantidad: "",
+      Id_Venta: "",
+      Id_Cliente: "",
+      Fecha: "",
       valorUnitario: "",
       fecha: "",
       detalle: "",
@@ -119,9 +92,9 @@ const VentasAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Id Venta</IonLabel>
                   <IonInput
-                    onIonChange={(e) => setVenta({ ...venta, idVenta: e.detail.value ?? "" })}
+                    onIonChange={(e) => setVenta({ ...venta, Id_Venta: e.detail.value ?? "" })}
                     placeholder="Id Venta"
-                    value={venta.idVenta}
+                    value={venta.Id_Venta}
                     required
                   ></IonInput>
                 </IonItem>
@@ -132,9 +105,9 @@ const VentasAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Producto</IonLabel>
                   <IonInput
-                    onIonChange={(e) => setVenta({ ...venta, producto: e.detail.value ?? "" })}
+                    onIonChange={(e) => setVenta({ ...venta, Id_Cliente: e.detail.value ?? "" })}
                     placeholder="Producto"
-                    value={venta.producto}
+                    value={venta.Id_Cliente}
                     required
                   ></IonInput>
                 </IonItem>
@@ -145,9 +118,9 @@ const VentasAdd: React.FC = () => {
                 <IonItem>
                   <IonLabel position="floating">Cantidad</IonLabel>
                   <IonInput
-                    onIonChange={(e) => setVenta({ ...venta, cantidad: e.detail.value ?? "" })}
+                    onIonChange={(e) => setVenta({ ...venta, Fecha: e.detail.value ?? "" })}
                     placeholder="Cantidad"
-                    value={venta.cantidad}
+                    value={venta.Fecha}
                     required
                   ></IonInput>
                 </IonItem>
