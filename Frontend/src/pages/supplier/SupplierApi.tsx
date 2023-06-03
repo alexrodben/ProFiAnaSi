@@ -1,32 +1,32 @@
 import { supplierFormat } from "./SupplierFormat";
-import axios, { AxiosResponse } from 'axios';
 import { URL } from "./../../config";
+import axios from 'axios';
 
 // GET
-export function searchSupplierData(): supplierFormat[] {
+export async function searchSupplierData(): Promise<supplierFormat[]> {
   if (!localStorage["suppliers"]) {
-    axios.get(URL + "proveedores", {
-      headers: {
-        Authorization: localStorage["token"]
-      }
-    })
-      .then((response: AxiosResponse) => {
-        localStorage["suppliers"] = JSON.stringify(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 403) {
-          console.error('Acceso denegado. Redireccionando a /login...');
-          localStorage.clear();
-          window.location.href = '/login';
-        } else {
-          console.error('Error al obtener los proveedores:', error);
+    try {
+      const response = await axios.get(URL + "proveedores", {
+        headers: {
+          Authorization: localStorage["token"]
         }
       });
-    return [];
+      localStorage["suppliers"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener los proveedores:', error);
+      }
+      return [];
+    }
   }
-  let suppliers: supplierFormat[] = JSON.parse(localStorage["suppliers"]);
-  return suppliers;
+  return JSON.parse(localStorage["suppliers"]);
 }
+
 
 // DELETE
 export async function removeSupplierData(remove: string): Promise<boolean> {
@@ -36,7 +36,7 @@ export async function removeSupplierData(remove: string): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let suppliers: supplierFormat[] = searchSupplierData();
+    let suppliers: supplierFormat[] = await searchSupplierData();
     suppliers = suppliers.filter((supplier: supplierFormat) => supplier.Id_Proveedor !== remove);
     localStorage["suppliers"] = JSON.stringify(suppliers);
     return true;
@@ -54,7 +54,7 @@ export async function editSupplierData(edit: supplierFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let suppliers: supplierFormat[] = searchSupplierData();
+    let suppliers: supplierFormat[] = await searchSupplierData();
     suppliers = suppliers.map((supplier: supplierFormat) => {
       if (supplier.Id_Proveedor === edit.Id_Proveedor) {
         return edit;
@@ -77,7 +77,7 @@ export async function saveSupplierData(supplier: supplierFormat): Promise<boolea
         Authorization: localStorage["token"]
       }
     });
-    let suppliers: supplierFormat[] = searchSupplierData();
+    let suppliers: supplierFormat[] = await searchSupplierData();
     suppliers.push(supplier);
     localStorage["suppliers"] = JSON.stringify(suppliers);
     return true;

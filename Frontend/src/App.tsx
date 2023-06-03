@@ -45,15 +45,12 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             {/* Redirect Routes */}
-            <Route path="/page" exact>
-              <Redirect to="/home" />
+            <Route path="/home" exact>
+              <Redirect to="/products" />
             </Route>
             <Route path="/" exact>
               <Redirect to="/login" />
             </Route>
-
-            {/* Default Routes */}
-            <Route path="/:name" exact component={Page} />
 
             {/* Products Routes */}
             <Route path="/products" exact component={ProductPage} />

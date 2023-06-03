@@ -1,31 +1,30 @@
 import { productFormat } from "./ProductFormat";
-import axios, { AxiosResponse } from 'axios';
 import { URL } from "./../../config";
+import axios from 'axios';
 
 //GET
-export function searchProductData(): productFormat[] {
+export async function searchProductData(): Promise<productFormat[]> {
   if (!localStorage["products"]) {
-    axios.get(URL + "productos", {
-      headers: {
-        Authorization: localStorage["token"]
-      }
-    })
-      .then((response: AxiosResponse) => {
-        localStorage["products"] = JSON.stringify(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 403) {
-          console.error('Acceso denegado. Redireccionando a /login...');
-          localStorage.clear();
-          window.location.href = '/login';
-        } else {
-          console.error('Error al obtener los productos:', error);
+    try {
+      const response = await axios.get(URL + "productos", {
+        headers: {
+          Authorization: localStorage["token"]
         }
       });
-    return [];
+      localStorage["products"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener los productos:', error);
+      }
+      return [];
+    }
   }
-  let products: productFormat[] = JSON.parse(localStorage["products"]);
-  return products;
+  return JSON.parse(localStorage["products"]);
 }
 
 //DELETE
@@ -36,7 +35,7 @@ export async function removeProductData(remove: string): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let products: productFormat[] = searchProductData();
+    let products: productFormat[] = await searchProductData();
     products = products.filter((product: productFormat) => product.Id_Producto !== remove);
     localStorage["products"] = JSON.stringify(products);
     return true;
@@ -54,7 +53,7 @@ export async function editProductData(edit: productFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let products: productFormat[] = searchProductData();
+    let products: productFormat[] = await searchProductData();
     products = products.map((product: productFormat) => {
       if (product.Id_Producto === edit.Id_Producto) {
         return edit;
@@ -77,7 +76,7 @@ export async function saveProductData(product: productFormat): Promise<boolean> 
         Authorization: localStorage["token"]
       }
     });
-    let products: productFormat[] = searchProductData();
+    let products: productFormat[] = await searchProductData();
     products.push(product);
     localStorage["products"] = JSON.stringify(products);
     return true;

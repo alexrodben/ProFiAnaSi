@@ -2,7 +2,7 @@ import { loginFormat } from "./LoginFormat";
 import axios, { AxiosResponse } from 'axios';
 import { URL } from "./../../config";
 
-export async function loginData(login: loginFormat): Promise<boolean> {
+export async function loginData(login: loginFormat): Promise<String> {
     try {
         const response: AxiosResponse = await axios.post(URL + "auth", login);
         if (response.status === 200) {
@@ -10,17 +10,18 @@ export async function loginData(login: loginFormat): Promise<boolean> {
 
             if (responseData.hasOwnProperty("token")) {
                 localStorage.setItem("token", responseData.token);
-                return true;
+                return "true";
             } else {
                 console.error('La respuesta no contiene un token válido:', responseData);
-                return false;
+                return "la respuesta no contiene un token válido ";
             }
-        } else {
-            console.error('Respuesta incorrecta del servidor:', response);
-            return false;
+        } else if (response.status === 401) {
+            console.error('Usuario o contraseña incorrecta:', response);
+            return "respuesta incorrecta del servidor";
         }
     } catch (error) {
-        console.error('Error al realizar la solicitud de autenticación:', error);
-        return false;
+        console.error('al realizar la solicitud de autenticación:', error);
+        return "al realizar la solicitud de autenticación";
     }
+    return "No hay conexion a internet";
 }

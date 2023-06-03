@@ -1,32 +1,32 @@
 import { customerFormat } from "./CustomerFormat";
-import axios, { AxiosResponse } from 'axios';
 import { URL } from "./../../config";
+import axios from 'axios';
 
 //GET
-export function searchCustomerData(): customerFormat[] {
+export async function searchCustomerData(): Promise<customerFormat[]> {
   if (!localStorage["customers"]) {
-    axios.get(URL + "clientes", {
-      headers: {
-        Authorization: localStorage["token"]
-      }
-    })
-      .then((response: AxiosResponse) => {
-        localStorage["customers"] = JSON.stringify(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 403) {
-          console.error('Acceso denegado. Redireccionando a /login...');
-          localStorage.clear();
-          window.location.href = '/login';
-        } else {
-          console.error('Error al obtener los clientes:', error);
+    try {
+      const response = await axios.get(URL + "clientes", {
+        headers: {
+          Authorization: localStorage["token"]
         }
       });
-    return [];
+      localStorage["customers"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener los clientes:', error);
+      }
+      return [];
+    }
   }
-  let customers: customerFormat[] = JSON.parse(localStorage["customers"]);
-  return customers;
+  return JSON.parse(localStorage["customers"]);
 }
+
 
 //DELETE
 export async function removeCustomerData(remove: string): Promise<boolean> {
@@ -36,7 +36,7 @@ export async function removeCustomerData(remove: string): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let customers: customerFormat[] = searchCustomerData();
+    let customers: customerFormat[] = await searchCustomerData();
     customers = customers.filter((customer: customerFormat) => customer.Id_Cliente !== remove);
     localStorage["customers"] = JSON.stringify(customers);
     return true;
@@ -54,7 +54,7 @@ export async function editCustomerData(edit: customerFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let customers: customerFormat[] = searchCustomerData();
+    let customers: customerFormat[] = await searchCustomerData();
     customers = customers.map((customer: customerFormat) => {
       if (customer.Id_Cliente === edit.Id_Cliente) {
         return edit;
@@ -77,7 +77,7 @@ export async function saveCustomerData(customer: customerFormat): Promise<boolea
         Authorization: localStorage["token"]
       }
     });
-    let customers: customerFormat[] = searchCustomerData();
+    let customers: customerFormat[] = await searchCustomerData();
     customers.push(customer);
     localStorage["customers"] = JSON.stringify(customers);
     return true;

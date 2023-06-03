@@ -24,6 +24,7 @@ import {
   receiptOutline,
   footstepsSharp,
   footstepsOutline,
+  exit,
   cog,
   people,
   clipboard,
@@ -152,6 +153,20 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
+          <IonMenuToggle key={100} autoHide={false}>
+            <IonItem
+              lines="none"
+              detail={false}
+              routerDirection="none"
+              routerLink={"/login"}
+              onClick={() => {
+                localStorage.clear();
+              }}
+            >
+              <IonIcon aria-hidden="true" slot="start" icon={exit} />
+              <IonLabel>Salir</IonLabel>
+            </IonItem>
+          </IonMenuToggle>
         </IonList>
       </IonContent>
     </IonMenu>

@@ -1,32 +1,33 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { categoryFormat } from './CategoryFormat';
 import { URL } from "../../config";
 
 // GET
-export function searchCategoryData(): categoryFormat[] {
+export async function searchCategoryData(): Promise<categoryFormat[]> {
   if (!localStorage["categories"]) {
-    axios.get(URL + "categorias", {
-      headers: {
-        Authorization: localStorage["token"]
-      }
-    })
-      .then((response: AxiosResponse) => {
-        localStorage["categories"] = JSON.stringify(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 403) {
-          console.error('Acceso denegado. Redireccionando a /login...');
-          localStorage.clear();
-          window.location.href = '/login';
-        } else {
-          console.error('Error al obtener las categorías:', error);
+    try {
+      const response = await axios.get(URL + "categorias", {
+        headers: {
+          Authorization: localStorage["token"]
         }
       });
+      localStorage["categories"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener las categorías:', error);
+      }
+    }
     return [];
   }
   let categories: categoryFormat[] = JSON.parse(localStorage["categories"]);
   return categories;
 }
+
 
 // DELETE
 export async function removeCategoryData(remove: string): Promise<boolean> {
@@ -36,7 +37,7 @@ export async function removeCategoryData(remove: string): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let categories: categoryFormat[] = searchCategoryData();
+    let categories: categoryFormat[] = await searchCategoryData();
     categories = categories.filter((category: categoryFormat) => category.Id_Categoria !== remove);
     localStorage["categories"] = JSON.stringify(categories);
     return true;
@@ -54,7 +55,7 @@ export async function editCategoryData(edit: categoryFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let categories: categoryFormat[] = searchCategoryData();
+    let categories: categoryFormat[] = await searchCategoryData();
     categories = categories.map((category: categoryFormat) => {
       if (category.Id_Categoria === edit.Id_Categoria) {
         return edit;
@@ -77,7 +78,7 @@ export async function saveCategoryData(category: categoryFormat): Promise<boolea
         Authorization: localStorage["token"]
       }
     });
-    let categories: categoryFormat[] = searchCategoryData();
+    let categories: categoryFormat[] = await searchCategoryData();
     categories.push(category);
     localStorage["categories"] = JSON.stringify(categories);
     return true;

@@ -1,32 +1,32 @@
-import axios, { AxiosResponse } from 'axios';
 import { userFormat } from './UserFormat';
 import { URL } from "../../config";
+import axios from 'axios';
 
 // GET
-export function searchUserData(): userFormat[] {
+export async function searchUserData(): Promise<userFormat[]> {
   if (!localStorage["users"]) {
-    axios.get(URL + "usuarios", {
-      headers: {
-        Authorization: localStorage["token"]
-      }
-    })
-      .then((response: AxiosResponse) => {
-        localStorage["users"] = JSON.stringify(response.data);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 403) {
-          console.error('Acceso denegado. Redireccionando a /login...');
-          localStorage.clear();
-          window.location.href = '/login';
-        } else {
-          console.error('Error al obtener los usuarios:', error);
+    try {
+      const response = await axios.get(URL + "usuarios", {
+        headers: {
+          Authorization: localStorage["token"]
         }
       });
-    return [];
+      localStorage["users"] = JSON.stringify(response.data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response && error.response.status === 403) {
+        console.error('Acceso denegado. Redireccionando a /login...');
+        localStorage.clear();
+        window.location.href = '/login';
+      } else {
+        console.error('Error al obtener los usuarios:', error);
+      }
+      return [];
+    }
   }
-  let users: userFormat[] = JSON.parse(localStorage["users"]);
-  return users;
+  return JSON.parse(localStorage["users"]);
 }
+
 
 // DELETE
 export async function removeUserData(remove: string): Promise<boolean> {
@@ -36,7 +36,7 @@ export async function removeUserData(remove: string): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let users: userFormat[] = searchUserData();
+    let users: userFormat[] = await searchUserData();
     users = users.filter((user: userFormat) => user.id_usuario !== remove);
     localStorage["users"] = JSON.stringify(users);
     return true;
@@ -54,7 +54,7 @@ export async function editUserData(edit: userFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let users: userFormat[] = searchUserData();
+    let users: userFormat[] = await searchUserData();
     users = users.map((user: userFormat) => {
       if (user.id_usuario === edit.id_usuario) {
         return edit;
@@ -77,7 +77,7 @@ export async function saveUserData(user: userFormat): Promise<boolean> {
         Authorization: localStorage["token"]
       }
     });
-    let users: userFormat[] = searchUserData();
+    let users: userFormat[] = await searchUserData();
     users.push(user);
     localStorage["users"] = JSON.stringify(users);
     return true;

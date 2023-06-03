@@ -11,12 +11,17 @@ import { loginData } from "./LoginApi";
 
 const Login: React.FC = () => {
   const history = useHistory();
+  const authorization: String = localStorage["token"];
   const [username, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const [isInfo, setIsInfo] = useState<boolean>(false);
   const [iserror, setIserror] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
+  if (authorization) {
+    history.push("/home");
+  }
 
   const handleLogin = async () => {
     if (!username) {
@@ -37,12 +42,12 @@ const Login: React.FC = () => {
     };
 
     const loggedIn = await loginData(data);
-    if (loggedIn) {
-      // Inicio de sesión exitoso, redireccionar a la página principal
-      history.push("/home");
+    console.log(loggedIn)
+    if (loggedIn === "true") {
+      setMessage("Al ingresar aceptas los teminos y condiciones");
+      setIsInfo(true);
     } else {
-      // Error en el inicio de sesión, mostrar mensaje de error
-      setMessage("Error en el inicio de sesión");
+      setMessage("Error" + loggedIn);
       setIserror(true);
     }
   };
@@ -64,7 +69,19 @@ const Login: React.FC = () => {
                 cssClass="my-custom-class"
                 header={"Error!"}
                 message={message}
-                buttons={["Dismiss"]}
+                buttons={["Cerrar"]}
+              />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonAlert
+                isOpen={isInfo}
+                onDidDismiss={() => history.push("/products")}
+                cssClass="my-custom-class"
+                header={"Ingreso correcto!"}
+                message={message}
+                buttons={["Aceptar"]}
               />
             </IonCol>
           </IonRow>
