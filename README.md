@@ -10,9 +10,9 @@ Septimo Semestre Sede Sanarate, Plan Domingo
 | Kevin Alejandro Rodas Balcárcel      | 8590-20-7610  | Base de datos  | SI            | SI      | KevRodas         | Jefe Grupo  |
 | Melissa Jazmin Alvarez González      | 8590-20-15165 | Base de datos  | SI            | SI      | malvarez12       |             |
 | José Alejandro Oscal Morales         | 8590-20-961   | Servidores     | SI            | SI      | OSCALJOSE        | Jefe Grupo  |
-| Wallington Lesther Eliu Mente Lopez  | 8590-20-4002  | Servidores     |               |         | LestherHD        |             | 
+| Wallington Lesther Eliu Mente Lopez  | 8590-20-4002  | Servidores     | SI            | SI      | LestherHD        |             | 
 | Abner Julian Abimael Canté Rodríguez | 8590-20-3070  | BackEnd / API  | SI            | SI      | abner202         | Jefe Grupo  |
-| Luis Fernando cardona campos         | 8590-20-23663 | BackEnd / API  |               |         | fercardona18     |             |
+| Luis Fernando cardona campos         | 8590-20-23663 | BackEnd / API  | SI            | SI      | fercardona18     |             |
 | Andy Alejandro Girón Loaiza          | 8590-20-931   | FrontEnd / App | SI            | SI      | AlejandroGLT     | Jefe Grupo  |
 | Velvet Julissa González Moreno       | 8590-20-16671 | FrontEnd / App | SI            | SI      | VelvetGonzalez25 |             |
 | Dionicio Véliz Cerón                 | 8590-20-13128 | FrontEnd / App | SI            | SI      | DvelizRYHD       |             |
