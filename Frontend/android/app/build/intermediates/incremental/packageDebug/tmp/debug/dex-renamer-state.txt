@@ -1,0 +1,13 @@
+#Sat Jun 03 09:15:09 CST 2023
+path.3=7/classes.dex
+path.2=0/classes.dex
+path.1=0/classes.dex
+path.0=classes.dex
+base.3=D\:\\alexr\\Documents\\UMG\\ANALISIS DE SISTEMAS I\\proyectoFinalAnalisis\\Frontend\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\7\\classes.dex
+base.2=D\:\\alexr\\Documents\\UMG\\ANALISIS DE SISTEMAS I\\proyectoFinalAnalisis\\Frontend\\android\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.1=D\:\\alexr\\Documents\\UMG\\ANALISIS DE SISTEMAS I\\proyectoFinalAnalisis\\Frontend\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\0\\classes.dex
+base.0=D\:\\alexr\\Documents\\UMG\\ANALISIS DE SISTEMAS I\\proyectoFinalAnalisis\\Frontend\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+renamed.3=classes4.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex

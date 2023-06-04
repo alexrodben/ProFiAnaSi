@@ -1,0 +1,7 @@
+io.ionic.starter.test.app-androidTest-0 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\build\generated\res\resValues\androidTest\debug
+io.ionic.starter.test.app-androidTest-1 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\build\generated\res\rs\androidTest\debug
+io.ionic.starter.test.app-mergeDebugAndroidTestResources-2 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+io.ionic.starter.test.app-mergeDebugAndroidTestResources-3 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+io.ionic.starter.test.app-merged_res-4 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\build\intermediates\merged_res\debugAndroidTest
+io.ionic.starter.test.app-androidTest-5 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\src\androidTest\res
+io.ionic.starter.test.app-androidTestDebug-6 D:\alexr\Documents\UMG\ANALISIS DE SISTEMAS I\proyectoFinalAnalisis\Frontend\android\app\src\androidTestDebug\res
